@@ -1,10 +1,12 @@
-# owlos.fx — open-source JS effects library
+# owlos vanilla JS — open-source JS effects library
 
 A curated catalog of vanilla-JS effects: backgrounds, cursors, HUDs, particles, audio. Each effect is **self-contained** — one HTML file, no dependencies, no build step.
 
 ## Live catalog
 
 Open `index.html` to browse. Click any card → live demo + tweak panel + code editor + download.
+
+[kirindenis.github.io/owlos-vanilla-js](https://kirindenis.github.io/owlos-vanilla-js)
 
 ## Effects in this release (v1.0)
 
