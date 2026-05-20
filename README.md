@@ -6,6 +6,8 @@ A curated catalog of vanilla-JS effects: backgrounds, cursors, HUDs, particles, 
 
 Open `index.html` to browse. Click any card → live demo + tweak panel + code editor + download.
 
+[kirindenis.github.io/owlos-vanilla-js](https://kirindenis.github.io/owlos-vanilla-js)
+
 ## Effects in this release (v1.0)
 
 | # | Name | Category | Size |
