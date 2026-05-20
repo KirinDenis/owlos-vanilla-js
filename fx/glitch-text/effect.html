@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><title>Glitch text</title>
+<style>
+html,body{margin:0;height:100%;background:#0a0a14;display:grid;place-items:center;font-family:'Courier New',monospace}
+.glitch{position:relative;font-size:120px;font-weight:900;letter-spacing:-2px;color:#f1f5f9;text-transform:uppercase}
+.glitch::before,.glitch::after{content:attr(data-text);position:absolute;left:0;top:0;width:100%;background:#0a0a14;overflow:hidden}
+.glitch::before{color:#ff2bd6;transform:translate(-2px,1px);animation:g1 4s infinite linear alternate;opacity:.7}
+.glitch::after{color:#00d4ff;transform:translate(2px,-1px);animation:g2 4s infinite linear alternate;opacity:.5}
+@keyframes g1{0%,90%,100%{clip-path:inset(100% 0 0 0)}92%{clip-path:inset(20% 0 60% 0);transform:translate(-3px,1px)}94%{clip-path:inset(50% 0 30% 0);transform:translate(2px,-2px)}96%{clip-path:inset(80% 0 0 0);transform:translate(-1px,2px)}}
+@keyframes g2{0%,88%,100%{clip-path:inset(100% 0 0 0)}90%{clip-path:inset(60% 0 20% 0);transform:translate(3px,1px)}93%{clip-path:inset(10% 0 70% 0);transform:translate(-2px,-2px)}}
+</style>
+</head><body>
+<h1 class="glitch" data-text="GLITCH">GLITCH</h1>
+</body></html>

@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>XOR email — owlos.fx</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+<link rel="stylesheet" href="../../fonts/fonts.css">
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="../../index.html">owlos<span class="dot">.</span>fx</a>
+    <div class="nav-right">
+      <a class="nav-link" href="../../index.html">← Catalog</a>
+      <a class="nav-cta" href="https://github.com/KirinDenis/owlos-vanilla-js" target="_blank" rel="noopener">Fork on GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<main class="shell">
+  <div class="hero" style="padding:8px 0 0;text-align:left">
+    <span class="eyebrow">Tool · Interactive</span>
+    <h1 style="font-size:clamp(28px,3.6vw,42px);margin-bottom:6px">XOR email encrypter</h1>
+    <p style="margin:0;text-align:left">Hide your email from scrapers. Enter your address, get an obfuscated hex string + drop-in reveal widget. Scramble animation → typewriter reveal on click.</p>
+  </div>
+
+  <section class="detail">
+    <div class="detail-stage">
+      <div class="detail-stage-bar"><div class="dots"><span></span><span></span><span></span></div><div class="label">Live preview · Try the reveal</div></div>
+      <iframe id="stage"></iframe>
+    </div>
+
+    <script type="text/x-effect" id="effect-source"><!--
+--><!doctype html>
+<html><head><meta charset="utf-8"><title>XOR email reveal</title>
+<style>
+html,body{margin:0;height:100%;background:#FFFAEF;font-family:'Inter',sans-serif;display:grid;place-items:center;color:#1E3A5F;padding:20px;text-align:center}
+.demo{max-width:480px}
+h3{font:800 18px/1.3 'Inter',sans-serif;margin:0 0 16px;letter-spacing:-.3px}
+p{font:400 14px/1.6 'Inter',sans-serif;color:#2C547F;margin:0 0 20px}
+.em-btn{display:inline-flex;align-items:center;gap:8px;font:600 16px/1 'Inter',sans-serif;color:#1E3A5F;background:#fff;border:1.5px solid rgba(30,58,95,.18);padding:12px 22px;border-radius:10px;cursor:pointer;transition:all .2s}
+.em-btn:hover{border-color:#F4A442;background:#FED7AA}
+.em-btn svg{opacity:.55}
+.em-link{display:inline-block;color:#1E3A5F;text-decoration:none;border-bottom:1.5px dashed rgba(244,164,66,.55);font:600 16px/1.4 'DM Mono',monospace;padding:2px 0;letter-spacing:.5px}
+.em-link:hover{border-bottom-style:solid}
+.em-scramble{display:inline-block;font:600 16px/1.4 'DM Mono',monospace;color:#1E3A5F;letter-spacing:.5px;padding:12px 0}
+</style>
+</head><body>
+<div class="demo">
+  <h3>Get in touch</h3>
+  <p>Click the button to reveal the protected email — the hex below contains the address XOR-encrypted with key 42.</p>
+  <span id="wrap">
+    <button class="em-btn" id="btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Show email
+    </button>
+  </span>
+</div>
+<script>
+window.PARAMS = window.PARAMS || {
+  hex: '4945445E4B495E6A455D464559045941',
+  key: 42,
+  scrambleSpeed: 36,
+  scrambleChars: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._@-'
+};
+(function(){
+  function decode(){
+    var e = '';
+    for (var i = 0; i < PARAMS.hex.length; i += 2) {
+      e += String.fromCharCode(parseInt(PARAMS.hex.substr(i, 2), 16) ^ PARAMS.key);
+    }
+    return e;
+  }
+  function reveal(btn){
+    var email = decode();
+    var wrap = document.getElementById('wrap');
+    var span = document.createElement('span');
+    span.className = 'em-scramble';
+    span.textContent = email.replace(/[^]/g, '·');
+    wrap.replaceChild(span, btn);
+    var f = 0, iv = setInterval(function(){
+      f++;
+      var r = Math.floor(f / 2);
+      if (r >= email.length) {
+        var a = document.createElement('a');
+        a.href = 'mailto:' + email;
+        a.className = 'em-link';
+        a.textContent = email;
+        wrap.replaceChild(a, span);
+        clearInterval(iv);
+        return;
+      }
+      span.textContent = email.slice(0, r) + email.slice(r).split('').map(function(){
+        return PARAMS.scrambleChars[Math.floor(Math.random() * PARAMS.scrambleChars.length)];
+      }).join('');
+    }, PARAMS.scrambleSpeed);
+  }
+  document.getElementById('btn').addEventListener('click', function(){ reveal(this); });
+  window.__seed = function(){
+    /* re-render the button if user changed params */
+    var w = document.getElementById('wrap');
+    w.innerHTML = '<button class="em-btn" id="btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Show email</button>';
+    document.getElementById('btn').addEventListener('click', function(){ reveal(this); });
+  };
+})();
+<\/script>
+</body></html>
+    </script>
+
+    <div class="tweaks-panel">
+      <div class="panel-h">Encrypter</div>
+      <div class="tweaks-panel-body">
+        <div class="tweak-row">
+          <label>Your email</label>
+          <input type="email" id="t-email" value="hello@example.com" placeholder="you@domain.com" style="padding:10px 14px;border:1.5px solid var(--line-2);border-radius:8px;background:var(--paper);color:var(--fg-1);font:500 14px/1 var(--f-mono)">
+        </div>
+        <div class="tweak-row">
+          <label>XOR key <span class="val" id="v-key">42</span></label>
+          <input type="range" id="t-key" min="1" max="255" value="42" step="1">
+        </div>
+        <div class="tweak-row">
+          <label>Generated hex</label>
+          <input type="text" id="t-hex" readonly style="padding:10px 14px;border:1.5px solid var(--line-2);border-radius:8px;background:var(--sand-2);color:var(--sun-2);font:600 12px/1.4 var(--f-mono);word-break:break-all">
+        </div>
+        <div class="tweak-row">
+          <label>Scramble speed <span class="val" id="v-spd">36</span> ms</label>
+          <input type="range" id="t-spd" min="10" max="120" value="36" step="2">
+        </div>
+      </div>
+      <div class="tweaks-actions">
+        <span class="hint">Edit email → hex auto-updates · Apply re-renders preview</span>
+        <button class="btn btn-ghost" id="b-reset">Reset</button>
+        <button class="btn btn-ghost" id="b-copy">Copy HTML</button>
+        <button class="btn btn-ghost" id="b-download">Download</button>
+        <button class="btn btn-primary" id="b-apply">Apply <span class="arr">→</span></button>
+      </div>
+    </div>
+
+    <div class="editor-panel">
+      <div class="panel-h">HTML source · drop into your site</div>
+      <div class="code"><textarea id="code" spellcheck="false"></textarea></div>
+    </div>
+  </section>
+
+  <div class="meta-block">
+    <h2>About this tool</h2>
+    <p><strong>How it works:</strong> Each character of your email is XOR-ed with a single-byte key (default 42), then hex-encoded. Bots scraping your site see a 32-character hex string with no <code>@</code>; humans clicking the button trigger a scramble + typewriter animation that reveals the real address. Used on every owlos.sk client site.</p>
+    <p><strong>To use:</strong> Edit your email above → hex regenerates automatically → click "Copy HTML" → paste the full snippet anywhere on your site. No build step, no dependencies.</p>
+    <div class="meta-row">
+      <span><span class="k">Size:</span>~2 KB</span>
+      <span><span class="k">Deps:</span>none</span>
+      <span><span class="k">License:</span><a href="../../LICENSE">MIT</a></span>
+    </div>
+  </div>
+</main>
+
+<footer>Made with <em>♥</em> by <a href="https://owlos.sk" target="_blank" rel="noopener">owlos.sk</a> · MIT License</footer>
+
+<script src="../../editor.js"></script>
+<script>
+/* custom email→hex sync */
+function emailToHex(email, key){
+  var hex = '';
+  for (var i = 0; i < email.length; i++) {
+    var v = (email.charCodeAt(i) ^ key).toString(16).toUpperCase();
+    hex += (v.length < 2 ? '0' + v : v);
+  }
+  return hex;
+}
+function syncHex(){
+  var email = document.getElementById('t-email').value || ' ';
+  var key = parseInt(document.getElementById('t-key').value, 10);
+  var hex = emailToHex(email, key);
+  document.getElementById('t-hex').value = hex;
+  /* also update PARAMS.hex via iframe state */
+  if (window.__fxState) { window.__fxState.hex = hex; window.__fxState.key = key; }
+}
+document.getElementById('t-email').addEventListener('input', syncHex);
+document.getElementById('t-key').addEventListener('input', syncHex);
+syncHex();
+
+fxEditor({
+  filename: 'xor-email.html',
+  controls: [
+    { id: 't-hex', key: 'hex' },
+    { id: 't-key', val: 'v-key', key: 'key' },
+    { id: 't-spd', val: 'v-spd', key: 'scrambleSpeed' }
+  ]
+});
+</script>
+</body></html>

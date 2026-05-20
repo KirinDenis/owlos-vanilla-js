@@ -1,0 +1,17 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Loading HUD</title>
+<style>
+html,body{margin:0;height:100%;background:#050608;font-family:'DM Mono',monospace;color:#94a3b8;overflow:hidden}
+.hud{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:40px;gap:18px}
+.title{font-size:14px;letter-spacing:6px;color:#FACC15;font-weight:800;margin-bottom:8px;text-transform:uppercase}
+.bar-wrap{width:min(380px,86vw);border:1px solid rgba(255,180,40,.20);padding:4px;border-radius:4px;background:rgba(0,0,0,.3)}
+.bar{height:10px;background:#FACC15;width:60%;box-shadow:0 0 12px #FACC15}
+.pct{font-size:11px;letter-spacing:2px;color:#475569;text-align:center}
+</style>
+</head><body>
+<div class="hud">
+  <div class="title">— SYSTEM BOOT —</div>
+  <div class="bar-wrap"><div class="bar"></div></div>
+  <div class="pct">60%</div>
+</div>
+</body></html>

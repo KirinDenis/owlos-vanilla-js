@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Synthwave sun — owlos.fx</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+<link rel="stylesheet" href="../../fonts/fonts.css">
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="../../index.html">owlos<span class="dot">.</span>fx</a>
+    <div class="nav-right">
+      <a class="nav-link" href="../../index.html">← Catalog</a>
+      <a class="nav-cta" href="https://github.com/KirinDenis/owlos-vanilla-js" target="_blank" rel="noopener">Fork on GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<main class="shell">
+  <div class="hero" style="padding:8px 0 0;text-align:left">
+    <span class="eyebrow">Scene</span>
+    <h1 style="font-size:clamp(28px,3.6vw,42px);margin-bottom:6px">Synthwave sun</h1>
+    <p style="margin:0;text-align:left">80s synthwave scene — striped sun rising over pine silhouettes. Pure CSS + SVG.</p>
+  </div>
+
+  <section class="detail">
+    <div class="detail-stage">
+      <div class="detail-stage-bar">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <div class="label">Live preview</div>
+      </div>
+      <iframe id="stage"></iframe>
+    </div>
+
+    <script type="text/x-effect" id="effect-source"><!--
+--><!doctype html>
+<html><head><meta charset="utf-8"><title>Synthwave sun</title>
+<style>
+html,body{margin:0;height:100%;overflow:hidden;font-family:system-ui,sans-serif}
+.sky{position:absolute;inset:0;background:linear-gradient(180deg,var(--sky1) 0%,var(--sky2) 60%,var(--sky3) 100%)}
+.stars{position:absolute;inset:0;background-image:radial-gradient(1px 1px at 14% 18%,#fff 1px,transparent 2px),radial-gradient(1.5px 1.5px at 32% 12%,#fff 1px,transparent 2px),radial-gradient(1px 1px at 58% 22%,#fff 1px,transparent 2px),radial-gradient(1px 1px at 72% 8%,#fff 1px,transparent 2px),radial-gradient(1.5px 1.5px at 86% 28%,#fff 1px,transparent 2px),radial-gradient(1px 1px at 22% 30%,#fff 1px,transparent 2px);opacity:.6}
+.sun-wrap{position:absolute;left:50%;top:35%;transform:translate(-50%,-50%);width:42vmin;height:42vmin;filter:drop-shadow(0 0 60px var(--glow))}
+.sun{position:absolute;inset:0;border-radius:50%;background:linear-gradient(180deg,var(--c1) 0%,var(--c2) 50%,var(--c3) 100%);box-shadow:0 0 80px var(--glow),0 0 160px var(--glow2)}
+.scan{position:absolute;inset:0;border-radius:50%;background:repeating-linear-gradient(180deg,transparent 0,transparent 22px,#0a0a14 22px,#0a0a14 28px);-webkit-mask-image:linear-gradient(180deg,transparent 0%,#000 35%,#000 100%);mask-image:linear-gradient(180deg,transparent 0%,#000 35%,#000 100%)}
+.ground{position:absolute;left:0;right:0;bottom:0;height:36%;background:radial-gradient(ellipse at 50% 100%,#1a1f28 0%,#0a0a14 60%,#000 100%)}
+.pine{position:absolute;bottom:0;background:#000;width:8px;clip-path:polygon(50% 0,100% 35%,70% 35%,100% 65%,70% 65%,100% 100%,0 100%,30% 65%,0 65%,30% 35%,0 35%)}
+.pine.p1{left:8%;width:30px;height:120px}
+.pine.p2{left:22%;width:34px;height:160px}
+.pine.p3{left:38%;width:26px;height:100px}
+.pine.p4{right:30%;width:30px;height:140px}
+.pine.p5{right:14%;width:34px;height:180px}
+.pine.p6{right:2%;width:24px;height:90px}
+.grid-floor{position:absolute;left:0;right:0;bottom:0;height:24%;background:linear-gradient(180deg,transparent 0%,var(--grid) 100%);background-image:repeating-linear-gradient(90deg,transparent 0,transparent 6%,var(--grid) 6%,var(--grid) 6.2%),repeating-linear-gradient(0deg,transparent 0,transparent 16%,var(--grid) 16%,var(--grid) 16.2%);transform:perspective(360px) rotateX(60deg);transform-origin:top;opacity:.7}
+</style>
+</head><body>
+<script>
+window.PARAMS = window.PARAMS || {
+  sun1: '#FACC15',
+  sun2: '#F4A442',
+  sun3: '#7C3AED',
+  glow: '#FACC15',
+  sky1: '#0a0a14',
+  sky2: '#7C3AED',
+  sky3: '#F4A442',
+  grid: '#F4A442',
+  scanlines: 22
+};
+(function(){
+  function apply(){
+    document.documentElement.style.setProperty('--c1', PARAMS.sun1);
+    document.documentElement.style.setProperty('--c2', PARAMS.sun2);
+    document.documentElement.style.setProperty('--c3', PARAMS.sun3);
+    document.documentElement.style.setProperty('--glow', PARAMS.glow);
+    document.documentElement.style.setProperty('--glow2', PARAMS.glow + '88');
+    document.documentElement.style.setProperty('--sky1', PARAMS.sky1);
+    document.documentElement.style.setProperty('--sky2', PARAMS.sky2);
+    document.documentElement.style.setProperty('--sky3', PARAMS.sky3);
+    document.documentElement.style.setProperty('--grid', PARAMS.grid);
+    document.querySelector('.scan').style.background = 'repeating-linear-gradient(180deg,transparent 0,transparent ' + PARAMS.scanlines + 'px,'+ PARAMS.sky1 + ' ' + PARAMS.scanlines + 'px,'+ PARAMS.sky1 +' ' + (PARAMS.scanlines + 6) + 'px)';
+  }
+  document.body.innerHTML = '<div class="sky"></div><div class="stars"></div><div class="ground"></div><div class="grid-floor"></div><div class="pine p1"></div><div class="pine p2"></div><div class="pine p3"></div><div class="pine p4"></div><div class="pine p5"></div><div class="pine p6"></div><div class="sun-wrap"><div class="sun"></div><div class="scan"></div></div>';
+  apply();
+  window.__seed = apply;
+})();
+<\/script>
+</body></html>
+    </script>
+
+    <div class="tweaks-panel">
+      <div class="panel-h">Tweaks</div>
+      <div class="tweaks-panel-body">
+        <div class="tweak-row"><label>Sun top colour</label><input type="color" id="t-c1" value="#FACC15"></div>
+        <div class="tweak-row"><label>Sun mid colour</label><input type="color" id="t-c2" value="#F4A442"></div>
+        <div class="tweak-row"><label>Sun bottom colour</label><input type="color" id="t-c3" value="#7C3AED"></div>
+        <div class="tweak-row"><label>Glow colour</label><input type="color" id="t-glow" value="#FACC15"></div>
+        <div class="tweak-row"><label>Sky top</label><input type="color" id="t-sky1" value="#0a0a14"></div>
+        <div class="tweak-row"><label>Sky mid</label><input type="color" id="t-sky2" value="#7C3AED"></div>
+        <div class="tweak-row"><label>Sky horizon</label><input type="color" id="t-sky3" value="#F4A442"></div>
+        <div class="tweak-row"><label>Grid colour</label><input type="color" id="t-grid" value="#F4A442"></div>
+        <div class="tweak-row">
+          <label>Scanlines <span class="val" id="v-scan">22</span> px</label>
+          <input type="range" id="t-scan" min="8" max="40" value="22" step="1">
+        </div>
+      </div>
+      <div class="tweaks-actions">
+        <span class="hint">Click Apply to re-render after editing source</span>
+        <button class="btn btn-ghost" id="b-reset">Reset</button>
+        <button class="btn btn-ghost" id="b-copy">Copy</button>
+        <button class="btn btn-ghost" id="b-download">Download</button>
+        <button class="btn btn-primary" id="b-apply">Apply <span class="arr">→</span></button>
+      </div>
+    </div>
+
+    <div class="editor-panel">
+      <div class="panel-h">HTML source <span class="small">full effect file · editable</span></div>
+      <div class="code"><textarea id="code" spellcheck="false"></textarea></div>
+    </div>
+  </section>
+
+  <div class="meta-block">
+    <h2>About this effect</h2>
+    <p>A nostalgic <strong>1980s synthwave scene</strong> — striped half-sun setting over jagged pine silhouettes with a perspective grid floor. Pure CSS, no JavaScript animations. Recolour every layer to match your brand.</p>
+    <div class="meta-row">
+      <span><span class="k">Size:</span>~2 KB</span>
+      <span><span class="k">Deps:</span>none</span>
+      <span><span class="k">License:</span><a href="../../LICENSE">MIT</a></span>
+    </div>
+  </div>
+</main>
+
+<footer>Made with <em>♥</em> by <a href="https://owlos.sk" target="_blank" rel="noopener">owlos.sk</a> · MIT License</footer>
+
+<script src="../../editor.js"></script>
+<script>
+fxEditor({
+  filename: 'synthwave-sun.html',
+  controls: [
+    { id: 't-c1', key: 'sun1' },
+    { id: 't-c2', key: 'sun2' },
+    { id: 't-c3', key: 'sun3' },
+    { id: 't-glow', key: 'glow' },
+    { id: 't-sky1', key: 'sky1' },
+    { id: 't-sky2', key: 'sky2' },
+    { id: 't-sky3', key: 'sky3' },
+    { id: 't-grid', key: 'grid' },
+    { id: 't-scan', val: 'v-scan', key: 'scanlines' }
+  ]
+});
+</script>
+</body>
+</html>

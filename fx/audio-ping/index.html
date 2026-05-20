@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Audio ping — owlos.fx</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+<link rel="stylesheet" href="../../fonts/fonts.css">
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="../../index.html">owlos<span class="dot">.</span>fx</a>
+    <div class="nav-right">
+      <a class="nav-link" href="../../index.html">← Catalog</a>
+      <a class="nav-cta" href="https://github.com/KirinDenis/owlos-vanilla-js" target="_blank" rel="noopener">Fork on GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<main class="shell">
+
+  <div class="hero" style="padding:8px 0 0;text-align:left">
+    <span class="eyebrow">Audio</span>
+    <h1 style="font-size:clamp(28px,3.6vw,42px);margin-bottom:6px">Motion-tracker ping</h1>
+    <p style="margin:0;text-align:left">A short procedural sine-decay ping. Click inside the preview to play.</p>
+  </div>
+
+  <section class="detail">
+
+    <div class="detail-stage">
+      <div class="detail-stage-bar">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <div class="label">Live preview · click to play</div>
+      </div>
+      <iframe id="stage"></iframe>
+    </div>
+
+    <script type="text/x-effect" id="effect-source"><!--
+--><!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><title>Audio ping</title>
+<style>
+  html,body{margin:0;height:100%;background:linear-gradient(135deg,#FFFAEF,#FED7AA);font:16px 'Inter',sans-serif;color:#1E3A5F}
+  .stage{height:100%;display:grid;place-items:center;text-align:center;padding:20px}
+  h2{font:800 22px/1.2 'Inter',sans-serif;letter-spacing:-.4px;margin:0 0 8px}
+  p{margin:0 0 18px;color:#2C547F;max-width:380px}
+  button{padding:14px 28px;border-radius:12px;border:0;background:#1E3A5F;color:#FFFAEF;font:700 14px/1 'Inter',sans-serif;cursor:pointer;box-shadow:0 4px 16px rgba(30,58,95,.25);letter-spacing:.5px}
+  button + button{margin-left:8px;background:#F4A442;color:#1E3A5F}
+  .pulse{display:inline-block;width:8px;height:8px;border-radius:50%;background:#22C55E;margin-right:8px;vertical-align:middle;animation:pulse 1.4s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  .meter{display:flex;gap:3px;justify-content:center;margin-top:18px}
+  .meter b{display:block;width:5px;height:18px;background:rgba(30,58,95,.20);border-radius:2px;transition:transform .12s,background .12s}
+  .meter b.on{background:#F4A442;transform:scaleY(1.4)}
+</style>
+</head><body>
+<div class="stage">
+  <div>
+    <h2><span class="pulse"></span>Motion tracker</h2>
+    <p>Click <strong>Single ping</strong> or <strong>Auto sweep</strong>. Web Audio synth, no files.</p>
+    <button onclick="window.fxPing()">Single ping</button>
+    <button id="sweep" onclick="window.fxSweep()">Auto sweep</button>
+    <div class="meter" id="meter"><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b></div>
+  </div>
+</div>
+<script>
+window.PARAMS = window.PARAMS || {
+  pitch: 880,
+  pitchEnd: 360,
+  decay: 0.25,
+  volume: 0.18,
+  waveform: 'sine',
+  sweepInterval: 1100
+};
+(function(){
+  var ctx, sweepTimer;
+  function audio(){ return ctx = ctx || new (window.AudioContext||window.webkitAudioContext)(); }
+  function ping(){
+    var c = audio(); var now = c.currentTime;
+    var osc = c.createOscillator();
+    osc.type = PARAMS.waveform;
+    osc.frequency.setValueAtTime(PARAMS.pitch, now);
+    osc.frequency.exponentialRampToValueAtTime(Math.max(20, PARAMS.pitchEnd), now + PARAMS.decay * 0.7);
+    var g = c.createGain();
+    g.gain.setValueAtTime(0.001, now);
+    g.gain.exponentialRampToValueAtTime(PARAMS.volume, now + 0.005);
+    g.gain.exponentialRampToValueAtTime(0.001, now + PARAMS.decay);
+    osc.connect(g).connect(c.destination);
+    osc.start(now); osc.stop(now + PARAMS.decay + 0.05);
+    flashMeter();
+  }
+  function flashMeter(){
+    var bars = document.querySelectorAll('#meter b');
+    var idx = Math.floor(Math.random() * bars.length);
+    bars[idx].classList.add('on'); setTimeout(function(){ bars[idx].classList.remove('on'); }, 120);
+  }
+  function sweep(){
+    if (sweepTimer) { clearInterval(sweepTimer); sweepTimer = null; document.getElementById('sweep').textContent = 'Auto sweep'; return; }
+    document.getElementById('sweep').textContent = 'Stop'; ping(); sweepTimer = setInterval(ping, PARAMS.sweepInterval);
+  }
+  window.fxPing = ping; window.fxSweep = sweep;
+  window.__seed = function(){ if (sweepTimer) { clearInterval(sweepTimer); sweep(); } };
+})();
+<\/script>
+</body></html>
+    </script>
+
+    <div class="tweaks-panel">
+      <div class="panel-h">Tweaks <span class="small">live · push to iframe</span></div>
+      <div class="tweaks-panel-body">
+        <div class="tweak-row">
+          <label>Start pitch <span class="val" id="v-pitch">880</span> Hz</label>
+          <input type="range" id="t-pitch" min="120" max="2200" value="880" step="10">
+        </div>
+        <div class="tweak-row">
+          <label>End pitch <span class="val" id="v-pe">360</span> Hz</label>
+          <input type="range" id="t-pe" min="40" max="2000" value="360" step="10">
+        </div>
+        <div class="tweak-row">
+          <label>Decay <span class="val" id="v-decay">0.25</span> s</label>
+          <input type="range" id="t-decay" min="0.05" max="1.2" value="0.25" step="0.01">
+        </div>
+        <div class="tweak-row">
+          <label>Volume <span class="val" id="v-vol">0.18</span></label>
+          <input type="range" id="t-vol" min="0.02" max="0.5" value="0.18" step="0.01">
+        </div>
+        <div class="tweak-row">
+          <label>Waveform</label>
+          <select id="t-wave">
+            <option value="sine">sine</option>
+            <option value="square">square</option>
+            <option value="sawtooth">sawtooth</option>
+            <option value="triangle">triangle</option>
+          </select>
+        </div>
+        <div class="tweak-row">
+          <label>Sweep interval <span class="val" id="v-int">1100</span> ms</label>
+          <input type="range" id="t-int" min="200" max="3000" value="1100" step="50">
+        </div>
+      </div>
+      <div class="tweaks-actions">
+        <span class="hint">Sliders push live · Apply re-renders from edited source</span>
+        <button class="btn btn-ghost" id="b-reset">Reset</button>
+        <button class="btn btn-ghost" id="b-copy">Copy</button>
+        <button class="btn btn-ghost" id="b-download">Download</button>
+        <button class="btn btn-primary" id="b-apply">Apply <span class="arr">→</span></button>
+      </div>
+    </div>
+
+    <div class="editor-panel">
+      <div class="panel-h">HTML source <span class="small">full effect file · editable</span></div>
+      <div class="code">
+        <textarea id="code" spellcheck="false"></textarea>
+      </div>
+    </div>
+
+  </section>
+
+  <div class="meta-block">
+    <h2>About this effect</h2>
+    <p>A procedurally generated motion-tracker ping. One oscillator, one gain node, exponential ramps over a 250 ms envelope.</p>
+    <div class="meta-row">
+      <span><span class="k">Size:</span>~1.5 KB</span>
+      <span><span class="k">API:</span>Web Audio</span>
+      <span><span class="k">License:</span><a href="../../LICENSE">MIT</a></span>
+    </div>
+  </div>
+
+</main>
+
+<footer>Made with <em>♥</em> by <a href="https://owlos.sk" target="_blank" rel="noopener">owlos.sk</a> · MIT License</footer>
+
+<script src="../../editor.js"></script>
+<script>
+fxEditor({
+  effectUrl: 'effect.html',
+  filename: 'audio-ping.html',
+  controls: [
+    { id: 't-pitch', val: 'v-pitch', key: 'pitch' },
+    { id: 't-pe',    val: 'v-pe',    key: 'pitchEnd' },
+    { id: 't-decay', val: 'v-decay', key: 'decay',    format: function(v){return (+v).toFixed(2);} },
+    { id: 't-vol',   val: 'v-vol',   key: 'volume',   format: function(v){return (+v).toFixed(2);} },
+    { id: 't-wave',  key: 'waveform' },
+    { id: 't-int',   val: 'v-int',   key: 'sweepInterval' }
+  ]
+});
+</script>
+</body>
+</html>

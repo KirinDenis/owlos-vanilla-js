@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Owlos FX — Open-source JS effects library</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A curated catalog of vanilla-JS effects: backgrounds, cursors, HUDs, particles. Live-edit and download. MIT licensed.">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="stylesheet" href="fonts/fonts.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">owlos<span class="dot">.</span>fx</a>
+    <div class="nav-right">
+      <a class="nav-link" href="#catalog">Catalog</a>
+      <a class="nav-link" href="https://github.com/KirinDenis/owlos-vanilla-js" target="_blank" rel="noopener">GitHub</a>
+      <a class="nav-cta" href="https://github.com/KirinDenis/owlos-vanilla-js" target="_blank" rel="noopener">
+        Fork on GitHub
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0a12 12 0 0 0-3.79 23.39c.6.11.82-.26.82-.58v-2.17c-3.34.73-4.04-1.41-4.04-1.41-.55-1.39-1.34-1.76-1.34-1.76-1.09-.74.08-.73.08-.73 1.21.09 1.84 1.24 1.84 1.24 1.07 1.83 2.81 1.3 3.5.99.11-.78.42-1.31.76-1.61-2.67-.3-5.47-1.34-5.47-5.95 0-1.31.47-2.39 1.24-3.23-.13-.31-.54-1.53.11-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.55 3.3-1.23 3.3-1.23.65 1.65.24 2.87.12 3.18.77.84 1.24 1.92 1.24 3.23 0 4.62-2.81 5.64-5.49 5.94.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.82.58A12 12 0 0 0 12 0z"/></svg>
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="shell">
+
+  <section class="hero">
+    <span class="eyebrow">v1.0 · MIT · vanilla JS</span>
+    <h1>
+      A library of <span class="accent">effects</span>,<br>
+      free for the taking.
+    </h1>
+    <p>
+      A growing collection of <strong>vanilla-JS effects</strong> — backgrounds, cursors, HUDs, audio, transitions —
+      battle-tested on real projects and packaged as <strong>self-contained snippets</strong>.
+      Tweak the knobs, copy the code, ship it.
+    </p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="#catalog">Browse the catalog <span class="arr">→</span></a>
+      <a class="btn btn-ghost" href="https://github.com/KirinDenis/owlos-vanilla-js" target="_blank" rel="noopener">Fork on GitHub</a>
+    </div>
+  </section>
+
+  <section id="catalog">
+    <div class="filters">
+      <button class="filter-pill active" data-filter="all">All <span class="count">13</span></button>
+      <button class="filter-pill" data-filter="background">Backgrounds <span class="count">4</span></button>
+      <button class="filter-pill" data-filter="cursor">Cursors <span class="count">1</span></button>
+      <button class="filter-pill" data-filter="audio">Audio <span class="count">1</span></button>
+      <button class="filter-pill" data-filter="scene">Scenes <span class="count">1</span></button>
+      <button class="filter-pill" data-filter="hud">HUDs <span class="count">3</span></button>
+      <button class="filter-pill" data-filter="tool">Tools <span class="count">1</span></button>
+      <button class="filter-pill" data-filter="text">Text FX <span class="count">1</span></button>
+      <button class="filter-pill" data-filter="animation">Animation <span class="count">1</span></button>
+    </div>
+
+    <div class="grid" id="grid">
+
+      <a class="card" href="fx/wire-canvas/index.html" data-cat="background">
+        <div class="card-preview">
+          <span class="card-cat">Background</span>
+          <iframe src="fx/wire-canvas/effect.html?preview=1" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
+        </div>
+        <div class="card-body">
+          <h3>Wire canvas</h3>
+          <p>Drifting particles connected by short-range lines. The classic "tech background" — re-implemented with poster-grade physics.</p>
+          <div class="card-meta">
+            <span>~3 KB</span>
+            <span>·</span>
+            <span>Canvas 2D</span>
+            <span class="arr">→</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="card" href="fx/cursor-halo/index.html" data-cat="cursor">
+        <div class="card-preview">
+          <span class="card-cat">Cursor</span>
+          <iframe src="fx/cursor-halo/effect.html?preview=1" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
+        </div>
+        <div class="card-body">
+          <h3>Cursor halo</h3>
+          <p>Dot + trailing ring with smart hover state. Lerp follow on the ring gives a satisfying spring. Halo around dot ensures visibility on any background.</p>
+          <div class="card-meta">
+            <span>~1 KB</span>
+            <span>·</span>
+            <span>RAF lerp</span>
+            <span class="arr">→</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="card" href="fx/audio-ping/index.html" data-cat="audio">
+        <div class="card-preview" style="background:linear-gradient(135deg,#FFFAEF 0%,#FED7AA 100%)">
+          <span class="card-cat">Audio</span>
+          <iframe src="fx/audio-ping/effect.html?preview=1" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
+        </div>
+        <div class="card-body">
+          <h3>Motion-tracker pings</h3>
+          <p>Web Audio synth — short exponential-decay sine ping. The motion-tracker sound from the Aliens HUD, fully procedural. No mp3, no licensing.</p>
+          <div class="card-meta">
+            <span>~1.5 KB</span>
+            <span>·</span>
+            <span>Web Audio API</span>
+            <span class="arr">→</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="card" href="fx/synthwave-sun/index.html" data-cat="scene">
+        <div class="card-preview" style="background:linear-gradient(180deg,#0a0a14 0%,#7C3AED 60%,#F4A442 100%)">
+          <span class="card-cat">Scene</span>
+          <iframe src="fx/synthwave-sun/effect.html?preview=1" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
+        </div>
+        <div class="card-body">
+          <h3>Synthwave sun</h3>
+          <p>80s sunset with striped sun, pine silhouettes, perspective grid. Pure CSS — every layer recolourable. The hero background for any retro project.</p>
+          <div class="card-meta">
+            <span>~2 KB</span>
+            <span>·</span>
+            <span>CSS only</span>
+            <span class="arr">→</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="card" href="fx/glitch-text/index.html" data-cat="text">
+        <div class="card-preview" style="background:#0a0a14">
+          <span class="card-cat">Text FX</span>
+          <iframe src="fx/glitch-text/effect.html?preview=1" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
+        </div>
+        <div class="card-body">
+          <h3>Glitch text</h3>
+          <p>RGB-split glitch on headlines. Two pseudo-elements + clip-path animation. Looks expensive, costs nothing. Pair with monospace fonts.</p>
+          <div class="card-meta">
+            <span>~1 KB</span>
+            <span>·</span>
+            <span>CSS only</span>
+            <span class="arr">→</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="card" href="fx/marquee-strip/index.html" data-cat="animation">
+        <div class="card-preview" style="background:#0a0a14">
+          <span class="card-cat">Animation</span>
+          <iframe src="fx/marquee-strip/effect.html?preview=1" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
+        </div>
+        <div class="card-body">
+          <h3>Marquee strip</h3>
+          <p>Infinite horizontal scroller with edge-fade mask. Perfect for "trusted by" logo strips, partner badges, scrolling slogans.</p>
+          <div class="card-meta">
+            <span>~1 KB</span>
+            <span>·</span>
+            <span>CSS only</span>
+            <span class="arr">→</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="card" href="fx/track-signals/index.html" data-cat="background">
+        <div class="card-preview" style="background:#0a0a14">
+          <span class="card-cat">Background</span>
+          <iframe src="fx/track-signals/effect.html?preview=1" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
+        </div>
+        <div class="card-body">
+          <h3>Track signals</h3>
+          <p>Dots travel along bezier paths carrying labels. The "data flowing through wires" effect — randomised tracks, configurable colours and label words.</p>
+          <div class="card-meta">
+            <span>~2.5 KB</span>
+            <span>·</span>
+            <span>Canvas 2D</span>
+            <span class="arr">→</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="card" href="fx/loading-hud/index.html" data-cat="hud">
+        <div class="card-preview" style="background:#050608">
+          <span class="card-cat">HUD</span>
+          <iframe src="fx/loading-hud/effect.html?preview=1" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
+        </div>
+        <div class="card-body">
+          <h3>Loading HUD</h3>
+          <p>Sci-fi boot screen with 12-line terminal log, progress bar, percent counter. Drop on top of your page as a splash, fade out after first run.</p>
+          <div class="card-meta">
+            <span>~2 KB</span>
+            <span>·</span>
+            <span>JS + CSS</span>
+            <span class="arr">→</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="card" href="fx/brand-splash/index.html" data-cat="hud">
+        <div class="card-preview" style="background:#C8102E">
+          <span class="card-cat">HUD</span>
+          <iframe src="fx/brand-splash/effect.html?preview=1" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
+        </div>
+        <div class="card-body">
+          <h3>Brand splash</h3>
+          <p>Branded entry animation — serif initials with pulsing bar underneath. Used on all owlos.sk client sites. Auto-hide after configured hold time.</p>
+          <div class="card-meta">
+            <span>~1.5 KB</span>
+            <span>·</span>
+            <span>CSS + JS</span>
+            <span class="arr">→</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="card" href="fx/spiral-splash/index.html" data-cat="hud">
+        <div class="card-preview" style="background:#3D1C08">
+          <span class="card-cat">HUD</span>
+          <iframe src="fx/spiral-splash/effect.html?preview=1" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
+        </div>
+        <div class="card-body">
+          <h3>Spiral splash</h3>
+          <p>Premium loading screen — rotating spiral with dots, central icon, brand name in serif italic, tagline, gradient progress bar. The full Kaviareň Ľviv treatment.</p>
+          <div class="card-meta"><span>~3 KB</span><span>·</span><span>Canvas + CSS</span><span class="arr">→</span></div>
+        </div>
+      </a>
+
+      <a class="card" href="fx/xor-email/index.html" data-cat="tool">
+        <div class="card-preview" style="background:#FFFAEF">
+          <span class="card-cat">Tool</span>
+          <iframe src="fx/xor-email/effect.html?preview=1" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
+        </div>
+        <div class="card-body">
+          <h3>XOR email encrypter</h3>
+          <p>Hide your address from scrapers. Enter your email → get encrypted hex + drop-in reveal widget with scramble + typewriter animation. Interactive tool, not decoration.</p>
+          <div class="card-meta"><span>~2 KB</span><span>·</span><span>Interactive</span><span class="arr">→</span></div>
+        </div>
+      </a>
+
+      <a class="card" href="fx/coins/index.html" data-cat="background">
+        <div class="card-preview" style="background:#0B2A4A">
+          <span class="card-cat">Background</span>
+          <iframe src="fx/coins/effect.html?preview=1" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
+        </div>
+        <div class="card-body">
+          <h3>Falling coins</h3>
+          <p>Gentle 2D coin shower — each coin uses a sinusoidal-width ellipse to fake spin. Perfect for fintech, crypto, wealth-management landings.</p>
+          <div class="card-meta"><span>~1 KB</span><span>·</span><span>Canvas 2D</span><span class="arr">→</span></div>
+        </div>
+      </a>
+
+      <a class="card" href="fx/bubbles/index.html" data-cat="background">
+        <div class="card-preview" style="background:#FDE7F1">
+          <span class="card-cat">Background</span>
+          <iframe src="fx/bubbles/effect.html?preview=1" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
+        </div>
+        <div class="card-body">
+          <h3>Rising bubbles</h3>
+          <p>Soft bubbles drift upward with gentle horizontal sway. Soap-bubble feel via radial gradient + thin stroke. Cosmetics, perfumery, wellness sites.</p>
+          <div class="card-meta"><span>~1 KB</span><span>·</span><span>Canvas 2D</span><span class="arr">→</span></div>
+        </div>
+      </a>
+
+    </div>
+  </section>
+</main>
+
+<footer>
+  Made with <em>♥</em> by <a href="https://owlos.sk" target="_blank" rel="noopener">owlos.sk</a> · MIT License · <a href="https://github.com/KirinDenis/owlos-vanilla-js" target="_blank" rel="noopener">github.com/owlos/fx</a>
+</footer>
+
+<script>
+document.querySelectorAll('.filter-pill').forEach(p=>{
+  p.addEventListener('click',()=>{
+    document.querySelectorAll('.filter-pill').forEach(x=>x.classList.remove('active'));
+    p.classList.add('active');
+    var f=p.dataset.filter;
+    document.querySelectorAll('.card').forEach(c=>{
+      c.style.display=(f==='all'||c.dataset.cat===f)?'':'none';
+    });
+  });
+});
+</script>
+</body>
+</html>

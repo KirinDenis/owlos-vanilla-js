@@ -1,0 +1,42 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Track signals</title>
+<style>html,body{margin:0;height:100%;background:#0a0a14;overflow:hidden}canvas{display:block;width:100%;height:100%}</style>
+</head><body>
+<canvas id="c"></canvas>
+<script>
+var canvas=document.getElementById('c'),ctx=canvas.getContext('2d'),W,H,curves=[],signals=[];
+function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;build();}
+function build(){
+  curves=[];signals=[];
+  for(var i=0;i<5;i++){
+    var p0={x:i%2?W:0,y:Math.random()*H};
+    var p3={x:i%2?0:W,y:Math.random()*H};
+    var p1={x:p0.x+(p3.x-p0.x)*0.3+(Math.random()-0.5)*W*0.3,y:Math.random()*H};
+    var p2={x:p0.x+(p3.x-p0.x)*0.7+(Math.random()-0.5)*W*0.3,y:Math.random()*H};
+    curves.push({p:[p0,p1,p2,p3]});
+  }
+  var cols=['#FACC15','#06b6d4','#7c3aed'];
+  var words=['data','api','sync','event','render','fetch','parse','emit'];
+  for(var s=0;s<8;s++){
+    signals.push({c:curves[s%curves.length],t:Math.random(),word:words[s%words.length],col:cols[s%cols.length],spd:0.0004*(0.7+Math.random()*0.8)});
+  }
+}
+function bzPt(c,t){var p=c.p,u=1-t;return{x:u*u*u*p[0].x+3*u*u*t*p[1].x+3*u*t*t*p[2].x+t*t*t*p[3].x,y:u*u*u*p[0].y+3*u*u*t*p[1].y+3*u*t*t*p[2].y+t*t*t*p[3].y};}
+window.addEventListener('resize',resize);resize();
+(function loop(){
+  ctx.clearRect(0,0,W,H);
+  curves.forEach(function(c){ctx.beginPath();var p=c.p;ctx.moveTo(p[0].x,p[0].y);ctx.bezierCurveTo(p[1].x,p[1].y,p[2].x,p[2].y,p[3].x,p[3].y);ctx.strokeStyle='rgba(29,78,216,.14)';ctx.lineWidth=1;ctx.stroke();});
+  ctx.font='10px sans-serif';ctx.textAlign='center';
+  signals.forEach(function(s){
+    s.t+=s.spd;if(s.t>1.1)s.t=-0.1;
+    var tc=Math.max(0,Math.min(1,s.t));var pos=bzPt(s.c,tc);
+    var prog=tc;var a=Math.min(prog/.1,1)*Math.min((1-prog)/.1,1);a=Math.max(0,a)*0.95;
+    ctx.globalAlpha=a;ctx.fillStyle=s.col;ctx.shadowColor=s.col;ctx.shadowBlur=12;
+    ctx.beginPath();ctx.arc(pos.x,pos.y,3,0,Math.PI*2);ctx.fill();
+    ctx.shadowBlur=0;ctx.globalAlpha=a*.85;ctx.fillText(s.word,pos.x,pos.y-10);
+    ctx.globalAlpha=1;
+  });
+  requestAnimationFrame(loop);
+})();
+</script>
+</body></html>

@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><title>Bubbles background — owlos.fx</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+<link rel="stylesheet" href="../../fonts/fonts.css">
+<link rel="stylesheet" href="../../style.css">
+</head><body>
+<nav class="nav"><div class="nav-inner"><a class="brand" href="../../index.html">owlos<span class="dot">.</span>fx</a><div class="nav-right"><a class="nav-link" href="../../index.html">← Catalog</a><a class="nav-cta" href="https://github.com/KirinDenis/owlos-vanilla-js" target="_blank" rel="noopener">Fork on GitHub</a></div></div></nav>
+<main class="shell">
+  <div class="hero" style="padding:8px 0 0;text-align:left">
+    <span class="eyebrow">Background</span>
+    <h1 style="font-size:clamp(28px,3.6vw,42px);margin-bottom:6px">Rising bubbles</h1>
+    <p style="margin:0;text-align:left">Translucent bubbles drift upward with gentle horizontal sway. Cosmetics, perfumery, wellness — anywhere "soft and feminine" reads.</p>
+  </div>
+  <section class="detail">
+    <div class="detail-stage"><div class="detail-stage-bar"><div class="dots"><span></span><span></span><span></span></div><div class="label">Live preview</div></div><iframe id="stage"></iframe></div>
+    <script type="text/x-effect" id="effect-source"><!--
+--><!doctype html>
+<html><head><meta charset="utf-8"><title>Bubbles</title>
+<style>html,body{margin:0;height:100%;background:var(--bg);overflow:hidden}canvas{display:block;width:100%;height:100%}</style></head><body>
+<canvas id="c"></canvas>
+<script>
+window.PARAMS = window.PARAMS || { bg:'#FDE7F1', count:40, color:'#FFFFFF', tint:'#EC4899', minSize:8, maxSize:50, riseSpeed:0.8, sway:0.4 };
+(function(){
+  var c=document.getElementById('c'),x=c.getContext('2d'),W,H,P=[];
+  function resize(){W=c.width=innerWidth;H=c.height=innerHeight;seed();}
+  function seed(){P=[];for(var i=0;i<PARAMS.count;i++)P.push(spawn(true));}
+  function spawn(rand){return{x:Math.random()*W,y:rand?Math.random()*H:H+30,r:PARAMS.minSize+Math.random()*(PARAMS.maxSize-PARAMS.minSize),vy:PARAMS.riseSpeed*(0.6+Math.random()*.8),sw:Math.random()*Math.PI*2,swSpd:0.02+Math.random()*0.02,alpha:0.15+Math.random()*0.35};}
+  function loop(){x.clearRect(0,0,W,H);P.forEach(function(p,i){p.y-=p.vy;p.sw+=p.swSpd;p.x+=Math.sin(p.sw)*PARAMS.sway;if(p.y<-p.r*2)P[i]=spawn(false);var g=x.createRadialGradient(p.x-p.r*.3,p.y-p.r*.3,p.r*.1,p.x,p.y,p.r);g.addColorStop(0,PARAMS.color);g.addColorStop(0.7,PARAMS.tint);g.addColorStop(1,'rgba(0,0,0,0)');x.globalAlpha=p.alpha;x.fillStyle=g;x.beginPath();x.arc(p.x,p.y,p.r,0,Math.PI*2);x.fill();x.strokeStyle=PARAMS.color;x.lineWidth=1;x.globalAlpha=p.alpha*.6;x.stroke();x.globalAlpha=1;});requestAnimationFrame(loop);}
+  document.body.style.background=PARAMS.bg;addEventListener('resize',resize);resize();loop();
+  window.__seed=function(){document.body.style.background=PARAMS.bg;seed();};
+})();
+<\/script>
+</body></html>
+    </script>
+    <div class="tweaks-panel">
+      <div class="panel-h">Tweaks</div>
+      <div class="tweaks-panel-body">
+        <div class="tweak-row"><label>Bubble count <span class="val" id="v-c">40</span></label><input type="range" id="t-c" min="5" max="120" value="40" step="2"></div>
+        <div class="tweak-row"><label>Min size <span class="val" id="v-mi">8</span> px</label><input type="range" id="t-mi" min="2" max="40" value="8" step="1"></div>
+        <div class="tweak-row"><label>Max size <span class="val" id="v-ma">50</span> px</label><input type="range" id="t-ma" min="20" max="120" value="50" step="2"></div>
+        <div class="tweak-row"><label>Rise speed <span class="val" id="v-r">0.8</span></label><input type="range" id="t-r" min="0.1" max="3" value="0.8" step="0.1"></div>
+        <div class="tweak-row"><label>Sway <span class="val" id="v-s">0.4</span></label><input type="range" id="t-s" min="0" max="2" value="0.4" step="0.05"></div>
+        <div class="tweak-row"><label>Background</label><input type="color" id="t-bg" value="#FDE7F1"></div>
+        <div class="tweak-row"><label>Bubble white</label><input type="color" id="t-col" value="#FFFFFF"></div>
+        <div class="tweak-row"><label>Bubble tint</label><input type="color" id="t-tint" value="#EC4899"></div>
+      </div>
+      <div class="tweaks-actions"><span class="hint">Sliders push live · Apply re-renders</span><button class="btn btn-ghost" id="b-reset">Reset</button><button class="btn btn-ghost" id="b-copy">Copy</button><button class="btn btn-ghost" id="b-download">Download</button><button class="btn btn-primary" id="b-apply">Apply <span class="arr">→</span></button></div>
+    </div>
+    <div class="editor-panel"><div class="panel-h">HTML source</div><div class="code"><textarea id="code" spellcheck="false"></textarea></div></div>
+  </section>
+  <div class="meta-block"><h2>About this effect</h2><p>Soft <strong>rising-bubble background</strong> — each bubble uses a radial gradient (white core → tint rim → transparent) plus a thin outer stroke for the classic soap-bubble look. Used on the <em>ea/</em> parfumerie site.</p><div class="meta-row"><span><span class="k">Size:</span>~1 KB</span><span><span class="k">License:</span><a href="../../LICENSE">MIT</a></span></div></div>
+</main>
+<footer>Made with <em>♥</em> by <a href="https://owlos.sk" target="_blank" rel="noopener">owlos.sk</a> · MIT License</footer>
+<script src="../../editor.js"></script>
+<script>
+fxEditor({filename:'bubbles.html',controls:[
+  {id:'t-c',val:'v-c',key:'count'},
+  {id:'t-mi',val:'v-mi',key:'minSize'},
+  {id:'t-ma',val:'v-ma',key:'maxSize'},
+  {id:'t-r',val:'v-r',key:'riseSpeed',format:function(v){return(+v).toFixed(1);}},
+  {id:'t-s',val:'v-s',key:'sway',format:function(v){return(+v).toFixed(2);}},
+  {id:'t-bg',key:'bg'},
+  {id:'t-col',key:'color'},
+  {id:'t-tint',key:'tint'}
+]});
+</script>
+</body></html>

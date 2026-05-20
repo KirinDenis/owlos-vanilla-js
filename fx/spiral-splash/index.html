@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Spiral splash — owlos.fx</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+<link rel="stylesheet" href="../../fonts/fonts.css">
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="../../index.html">owlos<span class="dot">.</span>fx</a>
+    <div class="nav-right">
+      <a class="nav-link" href="../../index.html">← Catalog</a>
+      <a class="nav-cta" href="https://github.com/KirinDenis/owlos-vanilla-js" target="_blank" rel="noopener">Fork on GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<main class="shell">
+  <div class="hero" style="padding:8px 0 0;text-align:left">
+    <span class="eyebrow">HUD</span>
+    <h1 style="font-size:clamp(28px,3.6vw,42px);margin-bottom:6px">Spiral splash</h1>
+    <p style="margin:0;text-align:left">Premium loading screen — rotating spiral with dots and an icon at centre, brand name in serif italic, tagline, gradient progress bar. Used on the Kaviareň Ľviv site.</p>
+  </div>
+
+  <section class="detail">
+    <div class="detail-stage">
+      <div class="detail-stage-bar"><div class="dots"><span></span><span></span><span></span></div><div class="label">Live preview</div></div>
+      <iframe id="stage"></iframe>
+    </div>
+
+    <script type="text/x-effect" id="effect-source"><!--
+--><!doctype html>
+<html><head><meta charset="utf-8"><title>Spiral splash</title>
+<style>
+html,body{margin:0;height:100%;font-family:var(--ff-body,'Inter',sans-serif);background:#FDF7EE;overflow:hidden}
+#loader{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:clip-path .9s cubic-bezier(.16,1,.3,1),opacity .4s;clip-path:inset(0 0 0 0)}
+#loader.out{clip-path:inset(0 0 100% 0);opacity:0;pointer-events:none}
+#ldc{display:block}
+.wm{margin-top:28px;font-family:Georgia,serif;font-size:28px;font-weight:700;color:var(--text);letter-spacing:-.01em;opacity:0;animation:fadeUp .7s .3s cubic-bezier(.16,1,.3,1) forwards}
+.wm em{font-style:italic;color:var(--accent)}
+.tag{font-size:11px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--text-dim);margin-top:8px;opacity:0;animation:fadeUp .6s .55s cubic-bezier(.16,1,.3,1) forwards}
+.track{width:200px;height:2px;border-radius:2px;margin-top:32px;background:rgba(255,255,255,.08);overflow:hidden;opacity:0;animation:fadeUp .5s .7s forwards}
+.fill{height:100%;width:0;border-radius:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .04s linear}
+.pct{font-size:12px;font-weight:500;letter-spacing:.08em;color:rgba(255,255,255,.35);margin-top:12px;opacity:0;animation:fadeUp .5s .8s forwards}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head><body>
+<div id="loader">
+  <canvas id="ldc" width="280" height="280"></canvas>
+  <div class="wm" id="wm">Kaviareň <em>Ľviv</em></div>
+  <div class="tag" id="tg">Ľvovská tradícia · Košice, Slovensko</div>
+  <div class="track"><div class="fill" id="fill"></div></div>
+  <div class="pct" id="pct">0%</div>
+</div>
+<script>
+window.PARAMS = window.PARAMS || {
+  brandStart: 'Kaviareň',
+  brandItalic: 'Ľviv',
+  tagline: 'Ľvovská tradícia · Košice, Slovensko',
+  icon: '☕',
+  bg: '#3D1C08',
+  text: '#FFFDF9',
+  textDim: '#EDD9B8',
+  accent: '#E0A855',
+  accent2: '#D4A853',
+  spiralColor: '#C4813A',
+  holdMs: 3500,
+  rings: 3,
+  dotsPerRing: 36,
+  rotateSpeed: 0.4
+};
+(function(){
+  function run(){
+    var root = document.documentElement.style;
+    root.setProperty('--bg', PARAMS.bg);
+    root.setProperty('--text', PARAMS.text);
+    root.setProperty('--text-dim', PARAMS.textDim);
+    root.setProperty('--accent', PARAMS.accent);
+    root.setProperty('--accent2', PARAMS.accent2);
+    document.getElementById('wm').innerHTML = PARAMS.brandStart + ' <em>' + PARAMS.brandItalic + '</em>';
+    document.getElementById('tg').textContent = PARAMS.tagline;
+
+    var loader = document.getElementById('loader');
+    loader.classList.remove('out');
+
+    /* canvas spiral */
+    var c = document.getElementById('ldc');
+    var ctx = c.getContext('2d');
+    var W = c.width, H = c.height, cx = W/2, cy = H/2;
+    var t0 = performance.now();
+    function draw(now){
+      var t = (now - t0) * 0.001 * PARAMS.rotateSpeed;
+      ctx.clearRect(0,0,W,H);
+
+      /* Archimedean spiral — single line winding outward */
+      var TURNS = PARAMS.rings;
+      var STEPS = 220;
+      var maxR = 50 + PARAMS.rings * 25;
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = PARAMS.spiralColor;
+      ctx.lineWidth = 1.5;
+      ctx.globalAlpha = 0.75;
+      ctx.beginPath();
+      for (var s = 0; s <= STEPS; s++) {
+        var f = s / STEPS;
+        var ang = f * TURNS * Math.PI * 2 + t;
+        var r = 10 + f * (maxR - 10);
+        var x = cx + Math.cos(ang) * r;
+        var y = cy + Math.sin(ang) * r;
+        if (s === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+
+      /* second spiral offset by π — double-helix richness */
+      ctx.strokeStyle = PARAMS.accent;
+      ctx.globalAlpha = 0.5;
+      ctx.beginPath();
+      for (var s = 0; s <= STEPS; s++) {
+        var f = s / STEPS;
+        var ang = f * TURNS * Math.PI * 2 + t + Math.PI;
+        var r = 10 + f * (maxR - 10);
+        var x = cx + Math.cos(ang) * r;
+        var y = cy + Math.sin(ang) * r;
+        if (s === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+
+      /* dots scattered along the outer arc */
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = PARAMS.spiralColor;
+      for (var i = 0; i < PARAMS.dotsPerRing; i++) {
+        var ang = (i / PARAMS.dotsPerRing) * Math.PI * 2 + t * 0.6;
+        var x = cx + Math.cos(ang) * maxR;
+        var y = cy + Math.sin(ang) * maxR;
+        var size = 1 + (i % 5 === 0 ? 1.5 : 0);
+        ctx.beginPath(); ctx.arc(x, y, size, 0, Math.PI*2); ctx.fill();
+      }
+
+      /* bright tracker dot following the outermost spiral end */
+      var endAng = TURNS * Math.PI * 2 + t;
+      var endX = cx + Math.cos(endAng) * (maxR - 6);
+      var endY = cy + Math.sin(endAng) * (maxR - 6);
+      ctx.fillStyle = PARAMS.accent;
+      ctx.shadowColor = PARAMS.accent;
+      ctx.shadowBlur = 12;
+      ctx.beginPath(); ctx.arc(endX, endY, 3, 0, Math.PI*2); ctx.fill();
+      ctx.shadowBlur = 0;
+
+      /* icon at centre */
+      ctx.globalAlpha = 1;
+      ctx.font = '34px serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = PARAMS.text;
+      ctx.fillText(PARAMS.icon, cx, cy);
+      if (!loader.classList.contains('out')) requestAnimationFrame(draw);
+    }
+    requestAnimationFrame(draw);
+
+    /* progress bar */
+    var fill = document.getElementById('fill');
+    var pct = document.getElementById('pct');
+    var start = performance.now();
+    function progress(){
+      var elapsed = performance.now() - start;
+      var p = Math.min(100, Math.round(elapsed / PARAMS.holdMs * 100));
+      fill.style.width = p + '%';
+      pct.textContent = p + '%';
+      if (p < 100) requestAnimationFrame(progress);
+      else setTimeout(function(){ loader.classList.add('out'); }, 280);
+    }
+    requestAnimationFrame(progress);
+  }
+  run();
+  window.__seed = run;
+})();
+<\/script>
+</body></html>
+    </script>
+
+    <div class="tweaks-panel">
+      <div class="panel-h">Tweaks</div>
+      <div class="tweaks-panel-body">
+        <div class="tweak-row"><label>Brand (regular)</label><input type="text" id="t-bs" value="Kaviareň" style="padding:8px 12px;border:1.5px solid var(--line-2);border-radius:8px;background:var(--paper);color:var(--fg-1);font:600 14px/1 var(--f-sans)"></div>
+        <div class="tweak-row"><label>Brand (italic)</label><input type="text" id="t-bi" value="Ľviv" style="padding:8px 12px;border:1.5px solid var(--line-2);border-radius:8px;background:var(--paper);color:var(--fg-1);font:600 14px/1 Georgia,serif;font-style:italic"></div>
+        <div class="tweak-row"><label>Tagline</label><input type="text" id="t-tag" value="Ľvovská tradícia · Košice, Slovensko" style="padding:8px 12px;border:1.5px solid var(--line-2);border-radius:8px;background:var(--paper);color:var(--fg-1);font:500 12px/1 var(--f-mono)"></div>
+        <div class="tweak-row"><label>Center icon</label><input type="text" id="t-icon" value="☕" maxlength="2" style="padding:8px 12px;border:1.5px solid var(--line-2);border-radius:8px;background:var(--paper);color:var(--fg-1);font:600 18px/1 serif;text-align:center"></div>
+        <div class="tweak-row"><label>Hold (ms) <span class="val" id="v-hold">3500</span></label><input type="range" id="t-hold" min="1500" max="8000" value="3500" step="100"></div>
+        <div class="tweak-row"><label>Rings <span class="val" id="v-r">3</span></label><input type="range" id="t-r" min="2" max="6" value="3" step="1"></div>
+        <div class="tweak-row"><label>Dots/ring <span class="val" id="v-d">36</span></label><input type="range" id="t-d" min="12" max="80" value="36" step="2"></div>
+        <div class="tweak-row"><label>Rotate speed <span class="val" id="v-sp">0.4</span></label><input type="range" id="t-sp" min="0.05" max="2" value="0.4" step="0.05"></div>
+        <div class="tweak-row"><label>Background</label><input type="color" id="t-bg" value="#3D1C08"></div>
+        <div class="tweak-row"><label>Text colour</label><input type="color" id="t-tc" value="#FFFDF9"></div>
+        <div class="tweak-row"><label>Tagline colour</label><input type="color" id="t-td" value="#EDD9B8"></div>
+        <div class="tweak-row"><label>Accent (italic + bar)</label><input type="color" id="t-ac" value="#E0A855"></div>
+        <div class="tweak-row"><label>Spiral colour</label><input type="color" id="t-sc" value="#C4813A"></div>
+      </div>
+      <div class="tweaks-actions">
+        <span class="hint">Reset replays the splash</span>
+        <button class="btn btn-ghost" id="b-reset">Replay</button>
+        <button class="btn btn-ghost" id="b-copy">Copy</button>
+        <button class="btn btn-ghost" id="b-download">Download</button>
+        <button class="btn btn-primary" id="b-apply">Apply <span class="arr">→</span></button>
+      </div>
+    </div>
+
+    <div class="editor-panel">
+      <div class="panel-h">HTML source</div>
+      <div class="code"><textarea id="code" spellcheck="false"></textarea></div>
+    </div>
+  </section>
+
+  <div class="meta-block">
+    <h2>About this effect</h2>
+    <p>A <strong>premium loading screen</strong> — rotating spiral of concentric rings with dots, accent arc highlight, central icon, brand name with italic word, tagline, gradient progress bar. The full sequence used on the Kaviareň Ľviv site. Auto-hides via clip-path slide-up when progress reaches 100%.</p>
+    <div class="meta-row">
+      <span><span class="k">Size:</span>~3 KB</span>
+      <span><span class="k">Deps:</span>none</span>
+      <span><span class="k">License:</span><a href="../../LICENSE">MIT</a></span>
+    </div>
+  </div>
+</main>
+
+<footer>Made with <em>♥</em> by <a href="https://owlos.sk" target="_blank" rel="noopener">owlos.sk</a> · MIT License</footer>
+
+<script src="../../editor.js"></script>
+<script>
+fxEditor({
+  filename: 'spiral-splash.html',
+  controls: [
+    { id: 't-bs', key: 'brandStart' },
+    { id: 't-bi', key: 'brandItalic' },
+    { id: 't-tag', key: 'tagline' },
+    { id: 't-icon', key: 'icon' },
+    { id: 't-hold', val: 'v-hold', key: 'holdMs' },
+    { id: 't-r', val: 'v-r', key: 'rings' },
+    { id: 't-d', val: 'v-d', key: 'dotsPerRing' },
+    { id: 't-sp', val: 'v-sp', key: 'rotateSpeed', format: function(v){return (+v).toFixed(2);} },
+    { id: 't-bg', key: 'bg' },
+    { id: 't-tc', key: 'text' },
+    { id: 't-td', key: 'textDim' },
+    { id: 't-ac', key: 'accent' },
+    { id: 't-sc', key: 'spiralColor' }
+  ]
+});
+</script>
+</body></html>

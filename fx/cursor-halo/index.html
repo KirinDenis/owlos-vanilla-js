@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cursor halo — owlos.fx</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+<link rel="stylesheet" href="../../fonts/fonts.css">
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="../../index.html">owlos<span class="dot">.</span>fx</a>
+    <div class="nav-right">
+      <a class="nav-link" href="../../index.html">← Catalog</a>
+      <a class="nav-cta" href="https://github.com/KirinDenis/owlos-vanilla-js" target="_blank" rel="noopener">Fork on GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<main class="shell">
+
+  <div class="hero" style="padding:8px 0 0;text-align:left">
+    <span class="eyebrow">Cursor</span>
+    <h1 style="font-size:clamp(28px,3.6vw,42px);margin-bottom:6px">Cursor halo</h1>
+    <p style="margin:0;text-align:left">Dot + smoothed trailing ring with hover detection. Move your mouse over the preview.</p>
+  </div>
+
+  <section class="detail">
+
+    <div class="detail-stage">
+      <div class="detail-stage-bar">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <div class="label">Live preview · move your mouse</div>
+      </div>
+      <iframe id="stage"></iframe>
+    </div>
+
+    <script type="text/x-effect" id="effect-source"><!--
+--><!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><title>Cursor halo</title>
+<style>
+  html,body{margin:0;height:100%;background:#FFFAEF;cursor:none;font:16px 'Inter',sans-serif;color:#2C547F;overflow:hidden}
+  .stage{height:100%;display:grid;place-items:center;text-align:center}
+  .stage p{font-size:18px;line-height:1.6;max-width:480px;padding:0 24px}
+  .stage p strong{color:#1E3A5F;font-weight:700}
+  .stage a{color:#F4A442;text-decoration:underline}
+  button.demo{margin-top:18px;padding:14px 28px;border:0;border-radius:12px;background:#1E3A5F;color:#FFFAEF;font:600 15px/1 'Inter',sans-serif;cursor:none;box-shadow:0 4px 16px rgba(30,58,95,.25)}
+  .cursor-dot,.cursor-ring{position:fixed;top:0;left:0;pointer-events:none;z-index:9999}
+  .cursor-dot{width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%}
+  .cursor-ring{border-radius:50%;transition:width .25s cubic-bezier(.4,0,.2,1),height .25s cubic-bezier(.4,0,.2,1),margin .25s cubic-bezier(.4,0,.2,1),background .25s cubic-bezier(.4,0,.2,1),border-color .25s cubic-bezier(.4,0,.2,1)}
+</style>
+</head><body>
+<div class="stage">
+  <div>
+    <p><strong>Move the mouse</strong>. The cursor's a dot with a smart trailing ring — <a href="#">links</a> grow the ring, <button class="demo">buttons</button> shift to hover state.</p>
+  </div>
+</div>
+<div class="cursor-dot" id="dot"></div>
+<div class="cursor-ring" id="ring"></div>
+<script>
+window.PARAMS = window.PARAMS || {
+  dotSize: 12,
+  ringSize: 44,
+  ringHover: 72,
+  dotColor: '#1E3A5F',
+  ringColor: '#1E3A5F',
+  hoverColor: '#F4A442',
+  haloColor: '#FFFAEF',
+  smoothing: 0.20
+};
+(function(){
+  var dot = document.getElementById('dot');
+  var ring = document.getElementById('ring');
+  function apply() {
+    dot.style.width = dot.style.height = PARAMS.dotSize + 'px';
+    dot.style.margin = -PARAMS.dotSize/2 + 'px 0 0 ' + -PARAMS.dotSize/2 + 'px';
+    dot.style.background = PARAMS.dotColor;
+    dot.style.boxShadow = '0 0 0 3px ' + PARAMS.haloColor + ', 0 0 0 4px rgba(30,58,95,.45)';
+    ring.style.borderWidth = '2px'; ring.style.borderStyle = 'solid';
+    setRingSize(false);
+  }
+  function setRingSize(hover){
+    var s = hover ? PARAMS.ringHover : PARAMS.ringSize;
+    ring.style.width = ring.style.height = s + 'px';
+    ring.style.margin = -s/2 + 'px 0 0 ' + -s/2 + 'px';
+    if (hover) { ring.style.background = 'rgba(244,164,66,.16)'; ring.style.borderColor = PARAMS.hoverColor; }
+    else       { ring.style.background = 'transparent';          ring.style.borderColor = PARAMS.ringColor;  }
+  }
+  apply();
+  var tx=0, ty=0, rx=0, ry=0;
+  window.addEventListener('mousemove', function(e){ tx=e.clientX; ty=e.clientY; dot.style.transform='translate('+tx+'px,'+ty+'px)'; });
+  function tick(){ rx += (tx - rx) * PARAMS.smoothing; ry += (ty - ry) * PARAMS.smoothing; ring.style.transform='translate('+rx+'px,'+ry+'px)'; requestAnimationFrame(tick); }
+  tick();
+  document.addEventListener('mouseover', function(e){ if (e.target.closest && e.target.closest('a, button, input, [role=button]')) setRingSize(true); });
+  document.addEventListener('mouseout',  function(e){ if (e.target.closest && e.target.closest('a, button, input, [role=button]')) setRingSize(false); });
+  window.__seed = apply;
+})();
+<\/script>
+</body></html>
+    </script>
+
+    <div class="tweaks-panel">
+      <div class="panel-h">Tweaks <span class="small">live · push to iframe</span></div>
+      <div class="tweaks-panel-body">
+        <div class="tweak-row">
+          <label>Dot size <span class="val" id="v-dot">12</span> px</label>
+          <input type="range" id="t-dot" min="4" max="24" value="12" step="1">
+        </div>
+        <div class="tweak-row">
+          <label>Ring size <span class="val" id="v-ring">44</span> px</label>
+          <input type="range" id="t-ring" min="24" max="80" value="44" step="2">
+        </div>
+        <div class="tweak-row">
+          <label>Ring hover <span class="val" id="v-hover">72</span> px</label>
+          <input type="range" id="t-hover" min="40" max="120" value="72" step="2">
+        </div>
+        <div class="tweak-row">
+          <label>Smoothing <span class="val" id="v-smooth">0.20</span></label>
+          <input type="range" id="t-smooth" min="0.05" max="0.5" value="0.20" step="0.01">
+        </div>
+        <div class="tweak-row">
+          <label>Dot colour</label>
+          <input type="color" id="t-dot-color" value="#1E3A5F">
+        </div>
+        <div class="tweak-row">
+          <label>Ring colour</label>
+          <input type="color" id="t-ring-color" value="#1E3A5F">
+        </div>
+        <div class="tweak-row">
+          <label>Hover colour</label>
+          <input type="color" id="t-hover-color" value="#F4A442">
+        </div>
+        <div class="tweak-row">
+          <label>Halo colour</label>
+          <input type="color" id="t-halo-color" value="#FFFAEF">
+        </div>
+      </div>
+      <div class="tweaks-actions">
+        <span class="hint">Sliders push live · Apply re-renders from edited source</span>
+        <button class="btn btn-ghost" id="b-reset">Reset</button>
+        <button class="btn btn-ghost" id="b-copy">Copy</button>
+        <button class="btn btn-ghost" id="b-download">Download</button>
+        <button class="btn btn-primary" id="b-apply">Apply <span class="arr">→</span></button>
+      </div>
+    </div>
+
+    <div class="editor-panel">
+      <div class="panel-h">HTML source <span class="small">full effect file · editable</span></div>
+      <div class="code">
+        <textarea id="code" spellcheck="false"></textarea>
+      </div>
+    </div>
+
+  </section>
+
+  <div class="meta-block">
+    <h2>About this effect</h2>
+    <p>A two-element cursor: a small dot that tracks the mouse exactly, and a larger ring that lerps toward it for that "spring-pulled" feel.</p>
+    <div class="meta-row">
+      <span><span class="k">Size:</span>~1 KB</span>
+      <span><span class="k">Deps:</span>none</span>
+      <span><span class="k">License:</span><a href="../../LICENSE">MIT</a></span>
+    </div>
+  </div>
+
+</main>
+
+<footer>Made with <em>♥</em> by <a href="https://owlos.sk" target="_blank" rel="noopener">owlos.sk</a> · MIT License</footer>
+
+<script src="../../editor.js"></script>
+<script>
+fxEditor({
+  effectUrl: 'effect.html',
+  filename: 'cursor-halo.html',
+  controls: [
+    { id: 't-dot',          val: 'v-dot',    key: 'dotSize' },
+    { id: 't-ring',         val: 'v-ring',   key: 'ringSize' },
+    { id: 't-hover',        val: 'v-hover',  key: 'ringHover' },
+    { id: 't-smooth',       val: 'v-smooth', key: 'smoothing', format: function(v){return (+v).toFixed(2);} },
+    { id: 't-dot-color',    key: 'dotColor' },
+    { id: 't-ring-color',   key: 'ringColor' },
+    { id: 't-hover-color',  key: 'hoverColor' },
+    { id: 't-halo-color',   key: 'haloColor' }
+  ]
+});
+</script>
+</body>
+</html>

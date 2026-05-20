@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Loading HUD — owlos.fx</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+<link rel="stylesheet" href="../../fonts/fonts.css">
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="../../index.html">owlos<span class="dot">.</span>fx</a>
+    <div class="nav-right">
+      <a class="nav-link" href="../../index.html">← Catalog</a>
+      <a class="nav-cta" href="https://github.com/KirinDenis/owlos-vanilla-js" target="_blank" rel="noopener">Fork on GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<main class="shell">
+  <div class="hero" style="padding:8px 0 0;text-align:left">
+    <span class="eyebrow">HUD</span>
+    <h1 style="font-size:clamp(28px,3.6vw,42px);margin-bottom:6px">Loading HUD</h1>
+    <p style="margin:0;text-align:left">Sci-fi boot screen with terminal lines, progress bar, status checks. Plays automatically — perfect as a page splash.</p>
+  </div>
+
+  <section class="detail">
+    <div class="detail-stage">
+      <div class="detail-stage-bar">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <div class="label">Live preview</div>
+      </div>
+      <iframe id="stage"></iframe>
+    </div>
+
+    <script type="text/x-effect" id="effect-source"><!--
+--><!doctype html>
+<html><head><meta charset="utf-8"><title>Loading HUD</title>
+<style>
+html,body{margin:0;height:100%;background:var(--bg);font-family:'DM Mono',monospace;color:var(--text);overflow:hidden}
+.hud{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:40px;gap:18px}
+.title{font-size:14px;letter-spacing:6px;color:var(--accent);font-weight:800;margin-bottom:8px;text-transform:uppercase}
+.bar-wrap{width:min(380px,86vw);border:1px solid var(--line);padding:4px;border-radius:4px;background:rgba(0,0,0,.3)}
+.bar{height:10px;background:var(--accent);width:0;transition:width .4s cubic-bezier(.4,0,.2,1);box-shadow:0 0 12px var(--accent)}
+.pct{font-size:11px;letter-spacing:2px;color:var(--text-d);text-align:center}
+.lines{font-size:11px;color:var(--text);max-width:min(420px,90vw);width:100%;height:120px;overflow:hidden;line-height:1.7;text-align:left;border-top:1px dashed var(--line);padding-top:12px}
+.lines b{color:var(--ok);font-weight:600}
+.lines i{color:var(--accent);font-style:normal;font-weight:600}
+.lines u{color:#FB7185;text-decoration:none;font-weight:600}
+.cur{display:inline-block;width:8px;height:12px;background:var(--accent);vertical-align:middle;animation:blink .9s infinite}
+@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+</style>
+</head><body>
+<div class="hud">
+  <div class="title" id="t">— SYSTEM BOOT —</div>
+  <div class="bar-wrap"><div class="bar" id="bar"></div></div>
+  <div class="pct" id="p">0%</div>
+  <div class="lines" id="l"></div>
+</div>
+<script>
+window.PARAMS = window.PARAMS || {
+  title: 'SYSTEM BOOT',
+  duration: 6000,
+  bg: '#050608',
+  text: '#94a3b8',
+  textDim: '#475569',
+  accent: '#FACC15',
+  ok: '#22C55E',
+  lineColor: 'rgba(255,180,40,.20)'
+};
+(function(){
+  var STEPS = [
+    '<b>OK</b> Initialising power core',
+    '<b>OK</b> Loading sensor array',
+    '<b>OK</b> Calibrating gyroscope',
+    '<i>...</i> Establishing uplink to Weyland-Yutani Net',
+    '<b>OK</b> Uplink established · 22.6 GHz',
+    '<b>OK</b> Loading user manifest',
+    '<i>...</i> Decrypting personal files',
+    '<u>WARN</u> 1 file restricted',
+    '<b>OK</b> Mounting tactical map',
+    '<b>OK</b> Audio subsystem online',
+    '<b>OK</b> Cursor calibration complete',
+    '<i>READY</i>'
+  ];
+  function run(){
+    document.documentElement.style.setProperty('--bg', PARAMS.bg);
+    document.documentElement.style.setProperty('--text', PARAMS.text);
+    document.documentElement.style.setProperty('--text-d', PARAMS.textDim);
+    document.documentElement.style.setProperty('--accent', PARAMS.accent);
+    document.documentElement.style.setProperty('--ok', PARAMS.ok);
+    document.documentElement.style.setProperty('--line', PARAMS.lineColor);
+    document.getElementById('t').textContent = '— ' + PARAMS.title + ' —';
+
+    var bar = document.getElementById('bar');
+    var p   = document.getElementById('p');
+    var l   = document.getElementById('l');
+    bar.style.width = '0%'; l.innerHTML = ''; p.textContent = '0%';
+
+    var i = 0, total = STEPS.length;
+    var step = PARAMS.duration / total;
+    function tick(){
+      if (i >= total) return;
+      var pct = Math.round((i + 1) / total * 100);
+      bar.style.width = pct + '%';
+      p.textContent = pct + '%';
+      var line = STEPS[i++];
+      var div = document.createElement('div');
+      div.innerHTML = '<span style="color:var(--text-d)">[' + String((i*step/1000).toFixed(2)).padStart(5,'0') + ']</span> ' + line + (i === total ? '<span class="cur"></span>' : '');
+      l.appendChild(div);
+      while (l.children.length > 6) l.removeChild(l.firstChild);
+      setTimeout(tick, step);
+    }
+    tick();
+  }
+  run();
+  window.__seed = run;
+})();
+<\/script>
+</body></html>
+    </script>
+
+    <div class="tweaks-panel">
+      <div class="panel-h">Tweaks</div>
+      <div class="tweaks-panel-body">
+        <div class="tweak-row">
+          <label>Title</label>
+          <input type="text" id="t-title" value="SYSTEM BOOT" style="padding:8px 12px;border:1.5px solid var(--line-2);border-radius:8px;background:var(--paper);color:var(--fg-1);font:600 13px/1 var(--f-mono)">
+        </div>
+        <div class="tweak-row">
+          <label>Duration <span class="val" id="v-dur">6000</span> ms</label>
+          <input type="range" id="t-dur" min="2000" max="15000" value="6000" step="500">
+        </div>
+        <div class="tweak-row"><label>Background</label><input type="color" id="t-bg" value="#050608"></div>
+        <div class="tweak-row"><label>Text colour</label><input type="color" id="t-text" value="#94a3b8"></div>
+        <div class="tweak-row"><label>Dim text</label><input type="color" id="t-textd" value="#475569"></div>
+        <div class="tweak-row"><label>Accent</label><input type="color" id="t-accent" value="#FACC15"></div>
+        <div class="tweak-row"><label>OK colour</label><input type="color" id="t-ok" value="#22C55E"></div>
+      </div>
+      <div class="tweaks-actions">
+        <span class="hint">Reset replays the boot sequence</span>
+        <button class="btn btn-ghost" id="b-reset">Replay</button>
+        <button class="btn btn-ghost" id="b-copy">Copy</button>
+        <button class="btn btn-ghost" id="b-download">Download</button>
+        <button class="btn btn-primary" id="b-apply">Apply <span class="arr">→</span></button>
+      </div>
+    </div>
+
+    <div class="editor-panel">
+      <div class="panel-h">HTML source</div>
+      <div class="code"><textarea id="code" spellcheck="false"></textarea></div>
+    </div>
+  </section>
+
+  <div class="meta-block">
+    <h2>About this effect</h2>
+    <p>A <strong>sci-fi boot HUD</strong> — 12-line terminal log with progress bar and percent counter. Drop it on top of your page as a splash; remove after first run with <code>opacity 0</code> transition.</p>
+    <div class="meta-row">
+      <span><span class="k">Size:</span>~2 KB</span>
+      <span><span class="k">Deps:</span>none</span>
+      <span><span class="k">License:</span><a href="../../LICENSE">MIT</a></span>
+    </div>
+  </div>
+</main>
+
+<footer>Made with <em>♥</em> by <a href="https://owlos.sk" target="_blank" rel="noopener">owlos.sk</a> · MIT License</footer>
+
+<script src="../../editor.js"></script>
+<script>
+fxEditor({
+  filename: 'loading-hud.html',
+  controls: [
+    { id: 't-title', key: 'title' },
+    { id: 't-dur', val: 'v-dur', key: 'duration' },
+    { id: 't-bg', key: 'bg' },
+    { id: 't-text', key: 'text' },
+    { id: 't-textd', key: 'textDim' },
+    { id: 't-accent', key: 'accent' },
+    { id: 't-ok', key: 'ok' }
+  ]
+});
+</script>
+</body>
+</html>

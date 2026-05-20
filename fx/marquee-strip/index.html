@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Marquee strip — owlos.fx</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+<link rel="stylesheet" href="../../fonts/fonts.css">
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="../../index.html">owlos<span class="dot">.</span>fx</a>
+    <div class="nav-right">
+      <a class="nav-link" href="../../index.html">← Catalog</a>
+      <a class="nav-cta" href="https://github.com/KirinDenis/owlos-vanilla-js" target="_blank" rel="noopener">Fork on GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<main class="shell">
+  <div class="hero" style="padding:8px 0 0;text-align:left">
+    <span class="eyebrow">Animation</span>
+    <h1 style="font-size:clamp(28px,3.6vw,42px);margin-bottom:6px">Marquee strip</h1>
+    <p style="margin:0;text-align:left">Infinite horizontal scroller with edge fades. Common pattern for "trusted by" / partner logos.</p>
+  </div>
+
+  <section class="detail">
+    <div class="detail-stage">
+      <div class="detail-stage-bar">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <div class="label">Live preview</div>
+      </div>
+      <iframe id="stage"></iframe>
+    </div>
+
+    <script type="text/x-effect" id="effect-source"><!--
+--><!doctype html>
+<html><head><meta charset="utf-8"><title>Marquee strip</title>
+<style>
+html,body{margin:0;height:100%;background:var(--bg);font-family:'Inter','DM Mono',monospace;display:grid;place-items:center}
+.marquee{overflow:hidden;width:100%;padding:32px 0;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.track{display:flex;gap:var(--gap);white-space:nowrap;animation:scroll var(--duration) linear infinite;width:max-content}
+.item{display:inline-flex;align-items:center;gap:12px;font:900 var(--size) 'DM Mono',monospace;letter-spacing:var(--ls);color:var(--text);text-transform:uppercase;white-space:nowrap}
+.sep{color:var(--accent);font-size:var(--size)}
+@keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+</style>
+</head><body>
+<div class="marquee"><div class="track" id="t"></div></div>
+<script>
+window.PARAMS = window.PARAMS || {
+  items: 'Trust no one | The truth is out there | I want to believe | Deny everything',
+  separator: '※',
+  size: 22,
+  gap: 48,
+  duration: 30,
+  bg: '#0a0a14',
+  text: '#f1f5f9',
+  accent: '#FACC15',
+  letterSpacing: 2
+};
+(function(){
+  function apply(){
+    var root = document.documentElement.style;
+    root.setProperty('--bg', PARAMS.bg);
+    root.setProperty('--text', PARAMS.text);
+    root.setProperty('--accent', PARAMS.accent);
+    root.setProperty('--size', PARAMS.size + 'px');
+    root.setProperty('--gap', PARAMS.gap + 'px');
+    root.setProperty('--duration', PARAMS.duration + 's');
+    root.setProperty('--ls', PARAMS.letterSpacing + 'px');
+    var items = PARAMS.items.split('|').map(function(s){return s.trim();});
+    var html = items.map(function(it){ return '<span class="item">'+it+'</span><span class="sep">'+PARAMS.separator+'</span>'; }).join('');
+    document.getElementById('t').innerHTML = html + html;
+  }
+  apply();
+  window.__seed = apply;
+})();
+<\/script>
+</body></html>
+    </script>
+
+    <div class="tweaks-panel">
+      <div class="panel-h">Tweaks</div>
+      <div class="tweaks-panel-body">
+        <div class="tweak-row">
+          <label>Items <small style="opacity:.5;font-weight:400">| separated</small></label>
+          <input type="text" id="t-items" value="Trust no one | The truth is out there | I want to believe | Deny everything" style="padding:8px 12px;border:1.5px solid var(--line-2);border-radius:8px;background:var(--paper);color:var(--fg-1);font:500 13px/1 var(--f-mono)">
+        </div>
+        <div class="tweak-row">
+          <label>Separator</label>
+          <input type="text" id="t-sep" value="※" maxlength="3" style="padding:8px 12px;border:1.5px solid var(--line-2);border-radius:8px;background:var(--paper);color:var(--fg-1);font:600 14px/1 var(--f-mono);text-align:center">
+        </div>
+        <div class="tweak-row">
+          <label>Font size <span class="val" id="v-size">22</span> px</label>
+          <input type="range" id="t-size" min="12" max="48" value="22" step="2">
+        </div>
+        <div class="tweak-row">
+          <label>Item gap <span class="val" id="v-gap">48</span> px</label>
+          <input type="range" id="t-gap" min="16" max="120" value="48" step="4">
+        </div>
+        <div class="tweak-row">
+          <label>Duration <span class="val" id="v-dur">30</span> s</label>
+          <input type="range" id="t-dur" min="8" max="80" value="30" step="2">
+        </div>
+        <div class="tweak-row">
+          <label>Letter spacing <span class="val" id="v-ls">2</span> px</label>
+          <input type="range" id="t-ls" min="0" max="6" value="2" step="0.5">
+        </div>
+        <div class="tweak-row"><label>Background</label><input type="color" id="t-bg" value="#0a0a14"></div>
+        <div class="tweak-row"><label>Text colour</label><input type="color" id="t-text" value="#f1f5f9"></div>
+        <div class="tweak-row"><label>Accent colour</label><input type="color" id="t-accent" value="#FACC15"></div>
+      </div>
+      <div class="tweaks-actions">
+        <span class="hint">Sliders push live · Apply re-renders</span>
+        <button class="btn btn-ghost" id="b-reset">Reset</button>
+        <button class="btn btn-ghost" id="b-copy">Copy</button>
+        <button class="btn btn-ghost" id="b-download">Download</button>
+        <button class="btn btn-primary" id="b-apply">Apply <span class="arr">→</span></button>
+      </div>
+    </div>
+
+    <div class="editor-panel">
+      <div class="panel-h">HTML source</div>
+      <div class="code"><textarea id="code" spellcheck="false"></textarea></div>
+    </div>
+  </section>
+
+  <div class="meta-block">
+    <h2>About this effect</h2>
+    <p>An <strong>infinite horizontal marquee</strong> using duplicated content and a single keyframe animation (0 → -50% translate). Edge fades via CSS mask-image. Perfect for "trusted by" logo strips, partner badges, scrolling slogans.</p>
+    <div class="meta-row">
+      <span><span class="k">Size:</span>~1 KB</span>
+      <span><span class="k">Deps:</span>none</span>
+      <span><span class="k">License:</span><a href="../../LICENSE">MIT</a></span>
+    </div>
+  </div>
+</main>
+
+<footer>Made with <em>♥</em> by <a href="https://owlos.sk" target="_blank" rel="noopener">owlos.sk</a> · MIT License</footer>
+
+<script src="../../editor.js"></script>
+<script>
+fxEditor({
+  filename: 'marquee-strip.html',
+  controls: [
+    { id: 't-items', key: 'items' },
+    { id: 't-sep', key: 'separator' },
+    { id: 't-size', val: 'v-size', key: 'size' },
+    { id: 't-gap', val: 'v-gap', key: 'gap' },
+    { id: 't-dur', val: 'v-dur', key: 'duration' },
+    { id: 't-ls', val: 'v-ls', key: 'letterSpacing', format: function(v){return (+v).toFixed(1);} },
+    { id: 't-bg', key: 'bg' },
+    { id: 't-text', key: 'text' },
+    { id: 't-accent', key: 'accent' }
+  ]
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Track signals — owlos.fx</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+<link rel="stylesheet" href="../../fonts/fonts.css">
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="../../index.html">owlos<span class="dot">.</span>fx</a>
+    <div class="nav-right">
+      <a class="nav-link" href="../../index.html">← Catalog</a>
+      <a class="nav-cta" href="https://github.com/KirinDenis/owlos-vanilla-js" target="_blank" rel="noopener">Fork on GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<main class="shell">
+  <div class="hero" style="padding:8px 0 0;text-align:left">
+    <span class="eyebrow">Background</span>
+    <h1 style="font-size:clamp(28px,3.6vw,42px);margin-bottom:6px">Track signals</h1>
+    <p style="margin:0;text-align:left">Dots travel along bezier paths carrying labels — the classic "data flowing through wires" effect from the Olena site.</p>
+  </div>
+
+  <section class="detail">
+    <div class="detail-stage">
+      <div class="detail-stage-bar">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <div class="label">Live preview</div>
+      </div>
+      <iframe id="stage"></iframe>
+    </div>
+
+    <script type="text/x-effect" id="effect-source"><!--
+--><!doctype html>
+<html><head><meta charset="utf-8"><title>Track signals</title>
+<style>html,body{margin:0;height:100%;background:var(--bg);overflow:hidden;font-family:'Inter',sans-serif}canvas{display:block;width:100%;height:100%}</style>
+</head><body>
+<canvas id="c"></canvas>
+<script>
+window.PARAMS = window.PARAMS || {
+  bg: '#0a0a14',
+  wireColor: '#60A5FA',
+  wireAlpha: 0.45,
+  wireWidth: 1.5,
+  dotColor1: '#FACC15',
+  dotColor2: '#06b6d4',
+  dotColor3: '#7c3aed',
+  signals: 8,
+  speed: 0.0004,
+  showLabels: 'yes',
+  labels: 'data | api | sync | event | render | fetch | parse | emit',
+  curveCount: 5
+};
+(function(){
+  var canvas = document.getElementById('c');
+  var ctx = canvas.getContext('2d');
+  var W,H,curves=[],signals=[],wIdx=0;
+
+  function rgba(hex,a){var r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return 'rgba('+r+','+g+','+b+','+a+')';}
+  function bzPt(c,t){var p=c.p,u=1-t;return{x:u*u*u*p[0].x+3*u*u*t*p[1].x+3*u*t*t*p[2].x+t*t*t*p[3].x,y:u*u*u*p[0].y+3*u*u*t*p[1].y+3*u*t*t*p[2].y+t*t*t*p[3].y};}
+
+  function build(){
+    curves=[]; signals=[];
+    var n=PARAMS.curveCount;
+    for(var i=0;i<n;i++){
+      var startSide=Math.random()<0.5?0:1;
+      var p0={x:startSide?W:0,y:Math.random()*H};
+      var p3={x:startSide?0:W,y:Math.random()*H};
+      var p1={x:p0.x+(p3.x-p0.x)*0.3+(Math.random()-0.5)*W*0.3,y:Math.random()*H};
+      var p2={x:p0.x+(p3.x-p0.x)*0.7+(Math.random()-0.5)*W*0.3,y:Math.random()*H};
+      curves.push({p:[p0,p1,p2,p3]});
+    }
+    var labels=PARAMS.labels.split('|').map(function(s){return s.trim();});
+    var cols=[PARAMS.dotColor1,PARAMS.dotColor2,PARAMS.dotColor3];
+    for(var s=0;s<PARAMS.signals;s++){
+      signals.push({c:curves[s%curves.length],t:Math.random(),word:labels[s%labels.length],col:cols[s%cols.length],spd:PARAMS.speed*(0.7+Math.random()*0.8)});
+    }
+  }
+
+  function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;build();}
+  window.addEventListener('resize',resize);
+
+  function loop(){
+    ctx.clearRect(0,0,W,H);
+    /* draw wires */
+    curves.forEach(function(c){
+      ctx.beginPath();
+      var p=c.p;
+      ctx.moveTo(p[0].x,p[0].y);
+      ctx.bezierCurveTo(p[1].x,p[1].y,p[2].x,p[2].y,p[3].x,p[3].y);
+      ctx.strokeStyle=rgba(PARAMS.wireColor,PARAMS.wireAlpha);
+      ctx.lineWidth=PARAMS.wireWidth;
+      ctx.stroke();
+    });
+    /* signals */
+    ctx.font='10px Inter,sans-serif';
+    ctx.textAlign='center';
+    signals.forEach(function(s){
+      s.t += s.spd;
+      if(s.t>1.1) s.t = -0.1;
+      var tc=Math.max(0,Math.min(1,s.t));
+      var pos=bzPt(s.c,tc);
+      var prog=Math.max(0,Math.min(1,s.t));
+      var alpha=Math.min(prog/0.1,1)*Math.min((1-prog)/0.1,1);
+      alpha=Math.max(0,alpha)*0.95;
+      ctx.globalAlpha=alpha;
+      ctx.beginPath(); ctx.arc(pos.x,pos.y,3,0,Math.PI*2);
+      ctx.fillStyle=s.col;
+      ctx.shadowColor=s.col;
+      ctx.shadowBlur=12;
+      ctx.fill();
+      ctx.shadowBlur=0;
+      if(PARAMS.showLabels==='yes'){
+        ctx.globalAlpha=alpha*0.85;
+        ctx.fillStyle=s.col;
+        ctx.fillText(s.word,pos.x,pos.y-10);
+      }
+      ctx.globalAlpha=1;
+    });
+    requestAnimationFrame(loop);
+  }
+
+  document.body.style.background = PARAMS.bg;
+  resize(); loop();
+  window.__seed = function(){
+    document.body.style.background = PARAMS.bg;
+    build();
+  };
+})();
+<\/script>
+</body></html>
+    </script>
+
+    <div class="tweaks-panel">
+      <div class="panel-h">Tweaks</div>
+      <div class="tweaks-panel-body">
+        <div class="tweak-row">
+          <label>Signals <span class="val" id="v-sig">8</span></label>
+          <input type="range" id="t-sig" min="2" max="20" value="8" step="1">
+        </div>
+        <div class="tweak-row">
+          <label>Tracks <span class="val" id="v-tr">5</span></label>
+          <input type="range" id="t-tr" min="2" max="12" value="5" step="1">
+        </div>
+        <div class="tweak-row">
+          <label>Speed <span class="val" id="v-sp">0.0004</span></label>
+          <input type="range" id="t-sp" min="0.0001" max="0.002" value="0.0004" step="0.0001">
+        </div>
+        <div class="tweak-row"><label>Background</label><input type="color" id="t-bg" value="#0a0a14"></div>
+        <div class="tweak-row"><label>Wire colour</label><input type="color" id="t-wire" value="#60A5FA"></div>
+        <div class="tweak-row">
+          <label>Wire opacity <span class="val" id="v-wa">0.45</span></label>
+          <input type="range" id="t-wa" min="0.05" max="1" value="0.45" step="0.05">
+        </div>
+        <div class="tweak-row">
+          <label>Wire width <span class="val" id="v-ww">1.5</span> px</label>
+          <input type="range" id="t-ww" min="0.5" max="4" value="1.5" step="0.1">
+        </div>
+        <div class="tweak-row"><label>Signal 1</label><input type="color" id="t-d1" value="#FACC15"></div>
+        <div class="tweak-row"><label>Signal 2</label><input type="color" id="t-d2" value="#06b6d4"></div>
+        <div class="tweak-row"><label>Signal 3</label><input type="color" id="t-d3" value="#7c3aed"></div>
+        <div class="tweak-row">
+          <label>Labels</label>
+          <select id="t-labels"><option value="yes">show</option><option value="no">hide</option></select>
+        </div>
+        <div class="tweak-row">
+          <label>Label words <small style="opacity:.5;font-weight:400">| separated</small></label>
+          <input type="text" id="t-words" value="data | api | sync | event | render | fetch | parse | emit" style="padding:8px 12px;border:1.5px solid var(--line-2);border-radius:8px;background:var(--paper);color:var(--fg-1);font:500 12px/1 var(--f-mono)">
+        </div>
+      </div>
+      <div class="tweaks-actions">
+        <span class="hint">Reset re-randomises track paths</span>
+        <button class="btn btn-ghost" id="b-reset">Reset</button>
+        <button class="btn btn-ghost" id="b-copy">Copy</button>
+        <button class="btn btn-ghost" id="b-download">Download</button>
+        <button class="btn btn-primary" id="b-apply">Apply <span class="arr">→</span></button>
+      </div>
+    </div>
+
+    <div class="editor-panel">
+      <div class="panel-h">HTML source</div>
+      <div class="code"><textarea id="code" spellcheck="false"></textarea></div>
+    </div>
+  </section>
+
+  <div class="meta-block">
+    <h2>About this effect</h2>
+    <p>Dots travelling along randomised <strong>cubic bezier curves</strong>, each carrying a label. Originally built for the <a href="https://owlos.sk" target="_blank" rel="noopener">owlos.sk</a> insurance lander to show "data flowing through wires". Lightweight, single canvas, no deps.</p>
+    <div class="meta-row">
+      <span><span class="k">Size:</span>~2.5 KB</span>
+      <span><span class="k">Deps:</span>none</span>
+      <span><span class="k">License:</span><a href="../../LICENSE">MIT</a></span>
+    </div>
+  </div>
+</main>
+
+<footer>Made with <em>♥</em> by <a href="https://owlos.sk" target="_blank" rel="noopener">owlos.sk</a> · MIT License</footer>
+
+<script src="../../editor.js"></script>
+<script>
+fxEditor({
+  filename: 'track-signals.html',
+  controls: [
+    { id: 't-sig', val: 'v-sig', key: 'signals' },
+    { id: 't-tr',  val: 'v-tr',  key: 'curveCount' },
+    { id: 't-sp',  val: 'v-sp',  key: 'speed', format: function(v){return (+v).toFixed(4);} },
+    { id: 't-bg',  key: 'bg' },
+    { id: 't-wire', key: 'wireColor' },
+    { id: 't-wa', val: 'v-wa', key: 'wireAlpha', format: function(v){return (+v).toFixed(2);} },
+    { id: 't-ww', val: 'v-ww', key: 'wireWidth', format: function(v){return (+v).toFixed(1);} },
+    { id: 't-d1', key: 'dotColor1' },
+    { id: 't-d2', key: 'dotColor2' },
+    { id: 't-d3', key: 'dotColor3' },
+    { id: 't-labels', key: 'showLabels' },
+    { id: 't-words', key: 'labels' }
+  ]
+});
+</script>
+</body>
+</html>

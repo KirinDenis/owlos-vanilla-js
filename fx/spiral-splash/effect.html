@@ -1,0 +1,14 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Spiral splash</title>
+<style>html,body{margin:0;height:100%;background:#3D1C08;font-family:Georgia,serif;color:#FFFDF9;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.wm{font-size:24px;margin-top:24px}.wm em{color:#E0A855}.tag{font-size:11px;letter-spacing:.22em;color:#EDD9B8;text-transform:uppercase;margin-top:8px}.track{width:180px;height:2px;background:rgba(255,255,255,.08);margin-top:24px;border-radius:2px;overflow:hidden}.fill{height:100%;width:64%;background:linear-gradient(90deg,#E0A855,#D4A853)}.pct{font-size:11px;color:rgba(255,255,255,.4);margin-top:10px}
+</style></head><body>
+<canvas id="c" width="180" height="180"></canvas>
+<div class="wm">Kaviareň <em>Ľviv</em></div>
+<div class="tag">Ľvovská tradícia · Košice</div>
+<div class="track"><div class="fill"></div></div>
+<div class="pct">64%</div>
+<script>
+var c=document.getElementById('c'),x=c.getContext('2d'),cx=90,cy=90,t0=performance.now();
+(function loop(now){var t=(now-t0)*.0004;x.clearRect(0,0,180,180);x.strokeStyle='#C4813A';x.globalAlpha=.55;[40,60,80].forEach(function(r){x.beginPath();x.arc(cx,cy,r,0,Math.PI*2);x.stroke();});x.globalAlpha=1;x.fillStyle='#C4813A';for(var i=0;i<36;i++){var a=i/36*Math.PI*2+t,d=92,xx=cx+Math.cos(a)*d,yy=cy+Math.sin(a)*d;x.beginPath();x.arc(xx,yy,i%5===0?2.5:1,0,Math.PI*2);x.fill();}x.strokeStyle='#E0A855';x.lineWidth=2;x.beginPath();x.arc(cx,cy,80,t*.7,t*.7+.6);x.stroke();x.font='24px serif';x.textAlign='center';x.textBaseline='middle';x.fillStyle='#fff';x.fillText('☕',cx,cy);requestAnimationFrame(loop);})(performance.now());
+</script></body></html>

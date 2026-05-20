@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Wire canvas — owlos.fx</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+<link rel="stylesheet" href="../../fonts/fonts.css">
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="../../index.html">owlos<span class="dot">.</span>fx</a>
+    <div class="nav-right">
+      <a class="nav-link" href="../../index.html">← Catalog</a>
+      <a class="nav-cta" href="https://github.com/KirinDenis/owlos-vanilla-js" target="_blank" rel="noopener">Fork on GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<main class="shell">
+
+  <div class="hero" style="padding:8px 0 0;text-align:left">
+    <span class="eyebrow">Background</span>
+    <h1 style="font-size:clamp(28px,3.6vw,42px);margin-bottom:6px">Wire canvas</h1>
+    <p style="margin:0;text-align:left">Drifting particles connected by short-range lines. Tweak count, link distance, speed, colour, line opacity. Edit the full source below — click Apply to re-render.</p>
+  </div>
+
+  <section class="detail">
+
+    <div class="detail-stage">
+      <div class="detail-stage-bar">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <div class="label">Live preview · drag any control</div>
+      </div>
+      <iframe id="stage"></iframe>
+    </div>
+
+    <script type="text/x-effect" id="effect-source"><!--
+--><!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><title>Wire canvas</title>
+<style>html,body{margin:0;height:100%;background:#FFFAEF;overflow:hidden}canvas{display:block;width:100%;height:100%}</style>
+</head><body>
+<canvas id="c"></canvas>
+<script>
+window.PARAMS = window.PARAMS || {
+  count: 90,
+  linkDistance: 0.18,
+  speed: 0.5,
+  size: 2.5,
+  color: '#2C547F',
+  accentColor: '#F4A442',
+  alpha: 0.35,
+  lineWidth: 0.9
+};
+(function () {
+  var canvas = document.getElementById('c');
+  var ctx = canvas.getContext('2d');
+  var W, H, parts = [];
+  function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; seed(); }
+  function seed() {
+    parts.length = 0;
+    var n = PARAMS.count;
+    for (var i = 0; i < n; i++) {
+      parts.push({
+        x: Math.random() * W, y: Math.random() * H,
+        vx: (Math.random() - 0.5) * PARAMS.speed,
+        vy: (Math.random() - 0.5) * PARAMS.speed * 0.6 + 0.02,
+        size: Math.random() * PARAMS.size + 1,
+        alpha: Math.random() * 0.4 + 0.3,
+        accent: Math.random() < 0.25
+      });
+    }
+  }
+  function hex2rgb(h) {
+    return parseInt(h.slice(1,3),16)+','+parseInt(h.slice(3,5),16)+','+parseInt(h.slice(5,7),16);
+  }
+  function loop() {
+    ctx.clearRect(0, 0, W, H);
+    var link = Math.max(80, Math.min(W, H) * PARAMS.linkDistance);
+    var rgbMain = hex2rgb(PARAMS.color);
+    var rgbAccent = hex2rgb(PARAMS.accentColor);
+    for (var i = 0; i < parts.length; i++) {
+      var p = parts[i];
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) { p.x = 0; p.vx = Math.abs(p.vx); }
+      if (p.x > W) { p.x = W; p.vx = -Math.abs(p.vx); }
+      if (p.y < 0) { p.y = 0; p.vy = Math.abs(p.vy); }
+      if (p.y > H) { p.y = H; p.vy = -Math.abs(p.vy); }
+      var rgb = p.accent ? rgbAccent : rgbMain;
+      for (var j = i + 1; j < parts.length; j++) {
+        var q = parts[j];
+        var dx = p.x - q.x, dy = p.y - q.y;
+        var d = Math.sqrt(dx * dx + dy * dy);
+        if (d < link) {
+          var a = (1 - d / link) * PARAMS.alpha;
+          ctx.strokeStyle = 'rgba(' + rgb + ',' + a + ')';
+          ctx.lineWidth = PARAMS.lineWidth;
+          ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke();
+        }
+      }
+      ctx.fillStyle = 'rgba(' + rgb + ',' + p.alpha + ')';
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill();
+    }
+    requestAnimationFrame(loop);
+  }
+  window.addEventListener('resize', resize);
+  window.__seed = seed;
+  resize(); loop();
+})();
+<\/script>
+</body></html>
+    </script>
+
+    <div class="tweaks-panel">
+      <div class="panel-h">Tweaks <span class="small">live · push to iframe</span></div>
+      <div class="tweaks-panel-body">
+        <div class="tweak-row">
+          <label>Particle count <span class="val" id="v-count">90</span></label>
+          <input type="range" id="t-count" min="20" max="280" value="90" step="5">
+        </div>
+        <div class="tweak-row">
+          <label>Link distance <span class="val" id="v-link">0.18</span></label>
+          <input type="range" id="t-link" min="0.05" max="0.35" value="0.18" step="0.01">
+        </div>
+        <div class="tweak-row">
+          <label>Speed <span class="val" id="v-speed">0.50</span></label>
+          <input type="range" id="t-speed" min="0.1" max="1.5" value="0.5" step="0.05">
+        </div>
+        <div class="tweak-row">
+          <label>Dot size <span class="val" id="v-size">2.5</span></label>
+          <input type="range" id="t-size" min="1" max="6" value="2.5" step="0.1">
+        </div>
+        <div class="tweak-row">
+          <label>Line opacity <span class="val" id="v-alpha">0.35</span></label>
+          <input type="range" id="t-alpha" min="0.05" max="0.8" value="0.35" step="0.01">
+        </div>
+        <div class="tweak-row">
+          <label>Line width <span class="val" id="v-lw">0.9</span></label>
+          <input type="range" id="t-lw" min="0.3" max="2" value="0.9" step="0.1">
+        </div>
+        <div class="tweak-row">
+          <label>Main colour</label>
+          <input type="color" id="t-color" value="#2C547F">
+        </div>
+        <div class="tweak-row">
+          <label>Accent colour</label>
+          <input type="color" id="t-accent" value="#F4A442">
+        </div>
+      </div>
+      <div class="tweaks-actions">
+        <span class="hint">Sliders push live · Apply re-renders from edited source</span>
+        <button class="btn btn-ghost" id="b-reset">Reset</button>
+        <button class="btn btn-ghost" id="b-copy">Copy</button>
+        <button class="btn btn-ghost" id="b-download">Download</button>
+        <button class="btn btn-primary" id="b-apply">Apply <span class="arr">→</span></button>
+      </div>
+    </div>
+
+    <div class="editor-panel">
+      <div class="panel-h">HTML source <span class="small">full effect file · editable</span></div>
+      <div class="code">
+        <textarea id="code" spellcheck="false"></textarea>
+      </div>
+    </div>
+
+  </section>
+
+  <div class="meta-block">
+    <h2>About this effect</h2>
+    <p><strong>Wire canvas</strong> is the classic "tech background" — a field of slowly drifting particles with short-range lines drawn between any two that come within <code>linkDistance × min(W,H)</code> of each other.</p>
+    <div class="meta-row">
+      <span><span class="k">Size:</span>~3 KB</span>
+      <span><span class="k">Deps:</span>none</span>
+      <span><span class="k">License:</span><a href="../../LICENSE">MIT</a></span>
+    </div>
+  </div>
+
+</main>
+
+<footer>Made with <em>♥</em> by <a href="https://owlos.sk" target="_blank" rel="noopener">owlos.sk</a> · MIT License</footer>
+
+<script src="../../editor.js"></script>
+<script>
+fxEditor({
+  effectUrl: 'effect.html',
+  filename: 'wire-canvas.html',
+  controls: [
+    { id: 't-count',  val: 'v-count',  key: 'count' },
+    { id: 't-link',   val: 'v-link',   key: 'linkDistance', format: function(v){return (+v).toFixed(2);} },
+    { id: 't-speed',  val: 'v-speed',  key: 'speed',        format: function(v){return (+v).toFixed(2);} },
+    { id: 't-size',   val: 'v-size',   key: 'size',         format: function(v){return (+v).toFixed(1);} },
+    { id: 't-alpha',  val: 'v-alpha',  key: 'alpha',        format: function(v){return (+v).toFixed(2);} },
+    { id: 't-lw',     val: 'v-lw',     key: 'lineWidth',    format: function(v){return (+v).toFixed(1);} },
+    { id: 't-color',  key: 'color' },
+    { id: 't-accent', key: 'accentColor' }
+  ]
+});
+</script>
+</body>
+</html>

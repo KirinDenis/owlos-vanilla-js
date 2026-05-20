@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><title>Marquee strip</title>
+<style>
+html,body{margin:0;height:100%;background:#0a0a14;font-family:'Inter','DM Mono',monospace;display:grid;place-items:center}
+.marquee{overflow:hidden;width:100%;padding:32px 0;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.track{display:flex;gap:48px;white-space:nowrap;animation:scroll 30s linear infinite;width:max-content}
+.item{display:inline-flex;align-items:center;font:900 22px 'DM Mono',monospace;letter-spacing:2px;color:#f1f5f9;text-transform:uppercase;white-space:nowrap}
+.sep{color:#FACC15;font-size:22px}
+@keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+</style>
+</head><body>
+<div class="marquee"><div class="track">
+<span class="item">Trust no one</span><span class="sep">※</span>
+<span class="item">The truth is out there</span><span class="sep">※</span>
+<span class="item">I want to believe</span><span class="sep">※</span>
+<span class="item">Deny everything</span><span class="sep">※</span>
+<span class="item">Trust no one</span><span class="sep">※</span>
+<span class="item">The truth is out there</span><span class="sep">※</span>
+<span class="item">I want to believe</span><span class="sep">※</span>
+<span class="item">Deny everything</span><span class="sep">※</span>
+</div></div>
+</body></html>
